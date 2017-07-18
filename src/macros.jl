@@ -26,7 +26,7 @@ end
 
 macro test_reference(reference, actual, kws...)
     new_actual = replace_placeholder(actual)
-    expr = :(test_reference_file(abspath($(esc(reference))), $(esc(new_actual))))
+    expr = :(test_reference_file(abspath(joinpath(@__DIR__, $(esc(reference)))), $(esc(new_actual))))
     for kw in kws
         (kw isa Expr && kw.head == :(=)) || error("invalid signature for @test_reference")
         push!(expr.args, Expr(:kw, kw.args...))
