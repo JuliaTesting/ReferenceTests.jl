@@ -9,6 +9,7 @@ using SHA
 export
 
     @withcolor,
+    @io2str,
     @test_reference
 
 include("utils.jl")

@@ -38,7 +38,7 @@ function test_reference_file(file::File{format"TXT"}, actual::AbstractArray{<:Ab
             end
         end
     catch ex
-        if isa(ex, SystemError) # File doesn't exist
+        if ex isa SystemError # File doesn't exist
             println("Reference file for \"$filename\" does not exist.")
             println("- NEW CONTENT -----------------")
             println.(actual)

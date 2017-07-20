@@ -1,35 +1,45 @@
-replace_placeholder(x) = x
-
-function replace_placeholder(expr::Expr)
-    if expr.head == :call
-        for i = 2:length(expr.args)
-            arg = expr.args[i]
-            if arg isa Expr && arg.head == :(::)
-                if arg.args[1] == :IO
-                    # show(::IO, ...)
-                    placeholder = arg.args[1]
-                    nvar = Symbol("#io")
-                    nexpr = deepcopy(expr)
-                    nexpr.args[i] = nvar
-                    nexpr = quote
-                        $nvar = IOBuffer()
-                        $nexpr
-                        readstring(seek($nvar, 0))
-                    end
-                    return nexpr
-                end
-            end
-        end
-    end
-    return expr
-end
-
 macro test_reference(reference, actual, kws...)
-    new_actual = replace_placeholder(actual)
-    expr = :(test_reference_file(abspath(joinpath(@__DIR__, $(esc(reference)))), $(esc(new_actual))))
+    expr = :(test_reference_file(abspath(joinpath(@__DIR__, $(esc(reference)))), $(esc(actual))))
     for kw in kws
         (kw isa Expr && kw.head == :(=)) || error("invalid signature for @test_reference")
         push!(expr.args, Expr(:kw, kw.args...))
     end
     expr
+end
+
+# --------------------------------------------------------------------
+
+io2str_impl(x) = x
+
+function io2str_impl(expr::Expr)
+    nvar = Symbol("#io")
+    if replace_expr!(expr, :(::IO), nvar)
+        quote
+            $nvar = IOBuffer()
+            $expr
+            readstring(seek($nvar, 0))
+        end
+    else
+        expr
+    end
+end
+
+macro io2str(expr)
+    io2str_impl(expr)
+end
+
+# --------------------------------------------------------------------
+
+function withcolor(fun)
+    old_color = Base.have_color
+    try
+        eval(Base, :(have_color = true))
+        fun()
+    finally
+        eval(Base, :(have_color = $old_color))
+    end
+end
+
+macro withcolor(expr)
+    :(withcolor(()->$(esc(expr))))
 end

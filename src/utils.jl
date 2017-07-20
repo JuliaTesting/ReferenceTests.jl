@@ -1,5 +1,6 @@
 function extended_query(filename)
     file, ext = splitext(filename)
+    # TODO: make this less ugly
     if uppercase(ext) == ".TXT"
         File{format"TXT"}(filename)
     elseif uppercase(ext) == ".SHA1"
@@ -9,16 +10,19 @@ function extended_query(filename)
     end
 end
 
-function withcolor(fun)
-    old_color = Base.have_color
-    try
-        eval(Base, :(have_color = true))
-        fun()
-    finally
-        eval(Base, :(have_color = $old_color))
+function replace_expr!(expr, old, new)
+    expr == old && throw(ArgumentError("can't replace root expression"))
+    found = false
+    if expr isa Expr
+        for i = 1:length(expr.args)
+            arg = expr.args[i]
+            if arg == old
+                expr.args[i] = new
+                found = true
+            else
+                found = found || replace_expr!(arg, old, new)
+            end
+        end
     end
-end
-
-macro withcolor(expr)
-    :(withcolor(()->$(esc(expr))))
+    found
 end
