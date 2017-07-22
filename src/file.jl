@@ -1,9 +1,9 @@
-function test_reference_file(filename::AbstractString, actual)
-    test_reference_file(extended_query(filename), actual)
+function test_reference_file(filename::AbstractString, actual; kw...)
+    test_reference_file(extended_query(filename), actual; kw...)
 end
 
-function test_reference_file(file::File{format"TXT"}, img::AbstractArray{<:Colorant})
-    str = @withcolor ImageInTerminal.encodeimg(ImageInTerminal.SmallBlocks(), ImageInTerminal.TermColor256(), img, 20, 40)[1]
+function test_reference_file(file::File{format"TXT"}, img::AbstractArray{<:Colorant}; size = (20,40))
+    str = @withcolor ImageInTerminal.encodeimg(ImageInTerminal.SmallBlocks(), ImageInTerminal.TermColor256(), img, size...)[1]
     test_reference_file(file, str)
 end
 

@@ -1,0 +1,5 @@
+FixedPointNumbers 0.3
+TestImages
+@windows ImageMagick
+@linux ImageMagick
+@osx QuartzImageIO
