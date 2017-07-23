@@ -21,13 +21,15 @@ rgb_rect = rand(RGB{N0f8}, 2, 3)
     @test @io2str(print(::IO, "foo")) == "foo"
     @test @io2str(println(::IO, "foo")) == "foo\n"
     @test @io2str(show(::IO, "foo")) == "\"foo\""
-    @test @io2str(show(IOContext(::IO, limit=true, displaysize=(5,5)), ones(30,30))) == "[1.0 1.0 … 1.0 1.0; 1.0 1.0 … 1.0 1.0; … ; 1.0 1.0 … 1.0 1.0; 1.0 1.0 … 1.0 1.0]"
+    A = ones(30,30)
+    @test @io2str(show(IOContext(::IO, limit=true, displaysize=(5,5)), A)) == "[1.0 1.0 … 1.0 1.0; 1.0 1.0 … 1.0 1.0; … ; 1.0 1.0 … 1.0 1.0; 1.0 1.0 … 1.0 1.0]"
 end
 
 @testset "string as txt" begin
     foo = "foo"
     @test_reference "references/string1.txt" foo * "bar"
-    @test_reference "references/string2.txt" @io2str show(IOContext(::IO, limit=true, displaysize=(5,5)), ones(30,30))
+    A = ones(30,30)
+    @test_reference "references/string2.txt" @io2str show(IOContext(::IO, limit=true, displaysize=(5,5)), A)
 end
 
 @testset "images as txt using ImageInTerminal" begin

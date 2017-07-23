@@ -12,13 +12,13 @@ end
 io2str_impl(x) = x
 
 function io2str_impl(expr::Expr)
-    nvar = Symbol("#io")
+    nvar = Symbol("#io#", randstring(4))
     if replace_expr!(expr, :(::IO), nvar)
-        quote
-            $nvar = IOBuffer()
+        esc(quote
+            $nvar = Base.IOBuffer()
             $expr
-            readstring(seek($nvar, 0))
-        end
+            Base.readstring(Base.seek($nvar, 0))
+        end)
     else
         expr
     end
