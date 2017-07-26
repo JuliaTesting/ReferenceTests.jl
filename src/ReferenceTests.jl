@@ -1,6 +1,7 @@
 module ReferenceTests
 
 using Base.Test
+using Images
 using FileIO
 using ImageInTerminal
 using ColorTypes

@@ -1,5 +1,5 @@
 macro test_reference(reference, actual, kws...)
-    expr = :(test_reference_file(abspath(joinpath(@__DIR__, $(esc(reference)))), $(esc(actual))))
+    expr = :(test_reference_file(abspath(joinpath(Base.@__DIR__, $(esc(reference)))), $(esc(actual))))
     for kw in kws
         (kw isa Expr && kw.head == :(=)) || error("invalid signature for @test_reference")
         push!(expr.args, Expr(:kw, kw.args...))

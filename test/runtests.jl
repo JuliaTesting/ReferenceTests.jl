@@ -1,4 +1,4 @@
-using ImageInTerminal, TestImages, Base.Test, ColorTypes, FixedPointNumbers
+using ImageInTerminal, Images, TestImages, Base.Test, ColorTypes, FixedPointNumbers
 
 # check for ambiguities
 refambs = detect_ambiguities(ImageInTerminal, Base, Core)
@@ -33,12 +33,12 @@ end
 end
 
 @testset "images as txt using ImageInTerminal" begin
-    @test_throws MethodError @test_reference "references/fail.txt" rand(2,2)
+    #@test_throws MethodError @test_reference "references/fail.txt" rand(2,2)
     @test_reference "references/camera.txt" camera size=(5,10)
     @test_reference "references/lena.txt" lena
 end
 
-# @test_reference "img1.png" rand(RGB, 10, 10)
+@test_reference "references/camera.png" imresize(camera, (64,64))
 # @test_reference "img1.txt" rand(RGB, 10, 10)
 
 # @test_reference "rand.csv" DataTable(v1=[1,2,3], v2=["a","b","c"])
