@@ -3,8 +3,8 @@ function query_extended(filename)
     # TODO: make this less ugly
     if uppercase(ext) == ".TXT"
         File{format"TXT"}(filename)
-    elseif uppercase(ext) == ".SHA1"
-        File{format"SHA1"}(filename)
+    elseif uppercase(ext) == ".SHA256"
+        File{format"SHA256"}(filename)
     else
         query(filename)
     end

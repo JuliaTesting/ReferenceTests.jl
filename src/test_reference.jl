@@ -12,6 +12,7 @@ macro test_reference(reference, actual, kws...)
 end
 
 # --------------------------------------------------------------------
+# Images
 
 function test_reference(file::File, actual::AbstractArray{<:Colorant}; sigma=ones(length(indices(actual))), eps=0.01)
     path = file.filename

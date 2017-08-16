@@ -29,6 +29,7 @@ end
 @testset "string as txt" begin
     foo = "foo"
     @test_reference "references/string1.txt" foo * "bar"
+    @test_reference "references/string1.txt" [foo * "bar"]
     A = ones(30,30)
     @test_reference "references/string2.txt" @io2str show(IOContext(::IO, limit=true, displaysize=(5,5)), A)
 end
@@ -37,6 +38,18 @@ end
     #@test_throws MethodError @test_reference "references/fail.txt" rand(2,2)
     @test_reference "references/camera.txt" camera size=(5,10)
     @test_reference "references/lena.txt" lena
+end
+
+@testset "string as SHA" begin
+    foo = "foo"
+    @test_reference "references/string1.sha256" foo * "bar"
+    A = ones(30,30)
+    @test_reference "references/string2.sha256" @io2str show(IOContext(::IO, limit=true, displaysize=(5,5)), A)
+end
+
+@testset "images as SHA" begin
+    @test_reference "references/camera.sha256" camera
+    @test_reference "references/lena.sha256" convert(Matrix{RGB{Float64}}, lena)
 end
 
 @test_reference "references/camera.png" imresize(camera, (64,64))
