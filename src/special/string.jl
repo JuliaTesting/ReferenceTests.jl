@@ -29,7 +29,7 @@ end
 
 function test_reference(file::File{format"SHA256"}, actual::AbstractArray{<:Colorant})
     size_str = bytes2hex(sha256(reinterpret(UInt8, [size(actual)...])))
-    img_str = bytes2hex(sha256(vec(rawview(convert(Array{N0f8}, channelview(actual))))))
+    img_str = bytes2hex(sha256(reinterpret(UInt8,vec(rawview(channelview(actual))))))
     test_reference_string(file, size_str * img_str)
 end
 
