@@ -6,6 +6,7 @@ using ReferenceTests
 ambs = detect_ambiguities(ReferenceTests, ImageInTerminal, Base, Core)
 @test length(setdiff(ambs, refambs)) == 0
 
+# load/create some example images
 lena = testimage("lena_color_256")
 camera = testimage("cameraman")
 cameras = similar(camera, size(camera)..., 2)

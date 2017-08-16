@@ -14,7 +14,7 @@ export
     @test_reference
 
 include("utils.jl")
-include("macros.jl")
-include("file.jl")
+include("test_reference.jl")
+include("special/txt.jl")
 
 end # module
