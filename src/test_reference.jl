@@ -1,7 +1,8 @@
-function test_reference(filename::AbstractString, actual; kw...)
-    test_reference(query_extended(filename), actual; kw...)
-end
+"""
+   @test_reference filename ex [kw...]
 
+TODO
+"""
 macro test_reference(reference, actual, kws...)
     expr = :(test_reference(abspath(joinpath(Base.@__DIR__, $(esc(reference)))), $(esc(actual))))
     for kw in kws
@@ -9,6 +10,22 @@ macro test_reference(reference, actual, kws...)
         push!(expr.args, Expr(:kw, kw.args...))
     end
     expr
+end
+
+function test_reference(filename::AbstractString, actual; kw...)
+    test_reference(query_extended(filename), actual; kw...)
+end
+
+function query_extended(filename)
+    file, ext = splitext(filename)
+    # TODO: make this less ugly
+    if uppercase(ext) == ".TXT"
+        File{format"TXT"}(filename)
+    elseif uppercase(ext) == ".SHA256"
+        File{format"SHA256"}(filename)
+    else
+        query(filename)
+    end
 end
 
 # --------------------------------------------------------------------

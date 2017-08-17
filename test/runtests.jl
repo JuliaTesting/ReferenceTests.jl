@@ -26,6 +26,12 @@ rgb_rect = rand(RGB{N0f8}, 2, 3)
     @test @io2str(show(IOContext(::IO, limit=true, displaysize=(5,5)), A)) == "[1.0 1.0 … 1.0 1.0; 1.0 1.0 … 1.0 1.0; … ; 1.0 1.0 … 1.0 1.0; 1.0 1.0 … 1.0 1.0]"
 end
 
+@testset "withcolor" begin
+    @test_throws ArgumentError @withcolor throw(ArgumentError("foo"))
+    @test @withcolor Base.have_color == true
+    @test @withcolor @io2str(print_with_color(:green, ::IO, "test")) == "\e[32mtest\e[39m"
+end
+
 @testset "string as txt" begin
     foo = "foo"
     @test_reference "references/string1.txt" foo * "bar"
