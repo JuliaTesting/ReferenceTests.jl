@@ -15,6 +15,6 @@ export
 
 include("utils.jl")
 include("test_reference.jl")
-include("special/string.jl")
+include("string.jl")
 
 end # module
