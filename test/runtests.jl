@@ -17,8 +17,8 @@ rgb_rect = rand(RGB{N0f8}, 2, 3)
 
 @testset "io2str" begin
     @test_throws ArgumentError eval(@macroexpand @io2str(::IO))
-    @test @io2str(2) == 2
-    @test @io2str(string(2)) == "2"
+    @test_throws ArgumentError @io2str(2)
+    @test_throws ArgumentError @io2str(string(2))
     @test @io2str(print(::IO, "foo")) == "foo"
     @test @io2str(println(::IO, "foo")) == "foo\n"
     @test @io2str(show(::IO, "foo")) == "\"foo\""
