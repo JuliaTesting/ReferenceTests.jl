@@ -40,17 +40,17 @@ function io2str_impl(expr::Expr)
     end
 end
 
-function replace_expr!(expr, old, new)
-    expr == old && throw(ArgumentError("can't replace root expression"))
+function replace_expr!(expr, pat, r)
+    expr == pat && throw(ArgumentError("can't replace root expression"))
     found = false
     if expr isa Expr
         for i = 1:length(expr.args)
             arg = expr.args[i]
-            if arg == old
-                expr.args[i] = new
+            if arg == pat
+                expr.args[i] = r
                 found = true
             else
-                found = found || replace_expr!(arg, old, new)
+                found = found || replace_expr!(arg, pat, r)
             end
         end
     end
