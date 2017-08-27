@@ -14,11 +14,11 @@ that the path `filename` is relative to the `test/` folder of
 your package.
 
 The file-extention of `filename`, as well as the type of the
-result of evaluating `ex`, have a huge impact on how the actual
-value is compared to the reference value. The default
-implementation will do a simple equality check with the result of
-`FileIO.load`. This means that it is the user's responsibility to
-have the required IO package installed.
+result of evaluating `ex`, determine how the actual value is
+compared to the reference value. The default implementation will
+do a simple equality check with the result of `FileIO.load`. This
+means that it is the user's responsibility to have the required
+IO package installed.
 
 Colorant arrays (i.e.) receive special treatment. If the
 extension of `filename` is `txt` then the package

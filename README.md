@@ -14,7 +14,54 @@ to be used alongside `Base.Test`._
 
 ## Introduction
 
-TODO
+It is very common for Julia packages to test the functionality of
+their exported functions using known input to output
+combinations. We will refer to such kind of tests as *reference
+tests*. In most cases these will be quite simple and look
+something along the line of `@test f(x) == y`, where `f` is a
+function of the package and `x` is some interesting input value
+for which the desired output `y` is known.
+
+For testing the output of more complex functions for which the
+expected output is more complicated (e.g. anything image
+processing related), using `@test` can be a little cumbersome to
+use. To that end this package provides the `@test_reference`
+macro, which expects a filename (relative to the file that
+invokes the macro) and an expression.
+
+```julia
+@test_reference "stringtest1.txt" string(collect(1:20))
+```
+
+If you put this code into your `test/runtests.jl` and execute the
+file in an interactive julia session, then it will trigger an
+interactive dialog if the results don't match. This dialog allows
+the user to create and/or update the reference files.
+
+The given file `stringtest1.txt` is assumed to be the relative
+path to the file that contains the macro invokation. This likely
+means that the path is relative to the `test/` folder of your
+package.
+
+The file-extention of (here `txt`), as well as the type of the
+result of evaluating (here `String`), determine how the actual
+value is compared to the reference value. The default
+implementation will do a simple equality check with the result of
+`FileIO.load`. This means that it is the user's responsibility to
+have the required IO package installed.
+
+Colorant arrays (i.e.) receive special treatment. If the
+extension of the filename is `txt` then the package
+[`ImageInTerminal.jl`](https://github.com/JuliaImages/ImageInTerminal.jl)
+will be used to create a string based cure approximation of the
+image. This will have low storage requirements and also allows to
+view the reference file in a simple terminal using `cat`.
+
+Another special file extension is `sha256` which will cause the
+hash of the result of the given expression to be stored and
+compared as plain text. This is useful for a convenient
+low-storage way of making sure that the return value doesn't
+change for selected test cases.
 
 ## Documentation
 
@@ -37,9 +84,11 @@ as usual.
 Pkg.add("ReferenceTests")
 ```
 
-Note, however, that depending on what file-format you use to
-store your references, you may need to add additional
-dependencies to your `test/REQUIRE` file.
+If you intend to use it for testing on CI, make sure to add the
+package name `ReferenceTests` to your `test/REQUIRE` file.
+Further note, that depending on what file-format you use to store
+your references, you may need to add additional dependencies to
+your `test/REQUIRE` file.
 
 ## License
 
