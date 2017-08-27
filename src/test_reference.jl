@@ -1,5 +1,5 @@
 """
-   @test_reference filename ex [kw...]
+    @test_reference filename ex [kw...]
 
 Tests that the expression `ex` evaluates to the same result as
 stored in the given reference file, which is denoted by the
