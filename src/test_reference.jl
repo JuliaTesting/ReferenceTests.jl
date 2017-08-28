@@ -9,11 +9,11 @@ match. This dialog allows the user to create and/or update the
 reference files.
 
 The given string `filename` is assumed to be the relative path to
-the file that contains the macro invokation. This likely means
+the file that contains the macro invocation. This likely means
 that the path `filename` is relative to the `test/` folder of
 your package.
 
-The file-extention of `filename`, as well as the type of the
+The file-extension of `filename`, as well as the type of the
 result of evaluating `ex`, determine how the actual value is
 compared to the reference value. The default implementation will
 do a simple equality check with the result of `FileIO.load`. This
