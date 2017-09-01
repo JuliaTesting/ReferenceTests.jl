@@ -15,12 +15,12 @@ to be used alongside `Base.Test`._
 ## Introduction
 
 It is very common for Julia packages to test the functionality of
-their exported functions using known input to output
+their exported functions against known input-to-output
 combinations. We will refer to such kind of tests as *reference
-tests*. In most cases these will be quite simple and look
-something along the line of `@test f(x) == y`, where `f` is a
-function of the package and `x` is some interesting input value
-for which the desired output `y` is known.
+tests*. In most cases these will be quite simple; something along
+the line of `@test f(x) == y`, where `f` is a function of the
+package and `x` is some interesting input value for which the
+desired output `y` is known.
 
 For testing the output of more complex functions for which the
 expected output is more complicated (e.g. anything image
@@ -39,11 +39,11 @@ interactive dialog if the results don't match. This dialog allows
 the user to create and/or update the reference files.
 
 The given file `stringtest1.txt` is assumed to be the relative
-path to the file that contains the macro invokation. This likely
+path to the file that contains the macro invocation. This likely
 means that the path is relative to the `test/` folder of your
 package.
 
-The file-extention of (here `txt`), as well as the type of the
+The file-extension of (here `txt`), as well as the type of the
 result of evaluating (here `String`), determine how the actual
 value is compared to the reference value. The default
 implementation will do a simple equality check with the result of
