@@ -50,6 +50,7 @@ end
 end
 
 @testset "string as SHA" begin
+    @test_reference "references/number1.sha256" 1337
     foo = "foo"
     @test_reference "references/string1.sha256" foo * "bar"
     A = ones(30,30)
@@ -70,4 +71,6 @@ end
 using DataFrames, CSVFiles
 @testset "DataFrame as CSV" begin
     @test_reference "references/dataframe.csv" DataFrame(v1=[1,2,3], v2=["a","b","c"])
+    @test_throws ErrorException @test_reference "references/wrongfilename.csv" DataFrame(v1=[1,2,3], v2=["a","b","c"])
+    @test_throws ErrorException @test_reference "references/dataframe.csv" DataFrame(v1=[1,2,3], v2=["c","b","c"])
 end
