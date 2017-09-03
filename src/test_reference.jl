@@ -111,7 +111,7 @@ function test_reference(file::File, actual::AbstractArray{<:Colorant}; sigma=one
             end
         end
     catch ex
-        if ex isa ErrorException && startswith(ex.msg, "unable to open") # File doesn't exist
+        if (ex isa MethodError) || (ex isa ErrorException && startswith(ex.msg, "unable to open")) # File doesn't exist (MethodError is for OSX for some reason)
             str_act = @withcolor ImageInTerminal.encodeimg(ImageInTerminal.SmallBlocks(), ImageInTerminal.TermColor256(), actual, 20, 40)[1]
             println("Reference file for \"$filename\" does not exist.")
             println("- NEW CONTENT ----------- -----")
