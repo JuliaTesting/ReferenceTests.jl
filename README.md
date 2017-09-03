@@ -55,17 +55,17 @@ package.
 
 ![readme2](https://user-images.githubusercontent.com/10854026/30002939-3ba46ada-90b6-11e7-8c8e-40e56c871ee4.png)
 
-The file-extension of (here `txt`), as well as the type of the
-result of evaluating (here `String`), determine how the actual
-value is compared to the reference value. The default
-implementation will do a simple equality check with the result of
-`FileIO.load`. This means that it is the user's responsibility to
-have the required IO package installed.
+The file-extension of the filename (here `txt`), as well as the
+type of the result of evaluating the expression (here `String`),
+determine how the actual value is compared to the reference
+value. The default implementation will do a simple equality check
+with the result of `FileIO.load`. This means that it is the
+user's responsibility to have the required IO package installed.
 
 Colorant arrays (i.e.) receive special treatment. If the
 extension of the filename is `txt` then the package
 [`ImageInTerminal.jl`](https://github.com/JuliaImages/ImageInTerminal.jl)
-will be used to create a string based cure approximation of the
+will be used to create a string-based crude approximation of the
 image. This will have low storage requirements and also allows to
 view the reference file in a simple terminal using `cat`.
 
