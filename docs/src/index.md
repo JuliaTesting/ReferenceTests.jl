@@ -11,13 +11,13 @@ to be used alongside `Base.Test`.
 ## Contents
 
 ```@contents
-Pages = ["public.md"]
+Pages = ["index.md"]
 ```
 
 ## Index
 
 ```@index
-Pages = ["public.md"]
+Pages = ["index.md"]
 ```
 
 ## Public Interface
