@@ -38,6 +38,9 @@ end
     @test_reference "references/string1.txt" [foo * "bar"]
     A = ones(30,30)
     @test_reference "references/string2.txt" @io2str show(IOContext(::IO, limit=true, displaysize=(5,5)), A)
+    @test_reference "references/string3.txt" 1337
+    @test_throws ErrorException @test_reference "references/string1.txt" "intentionally wrong to check that this message prints"
+    @test_throws ErrorException @test_reference "references/wrong.txt" "intentional error to check that this message prints"
 end
 
 @testset "images as txt using ImageInTerminal" begin
@@ -59,6 +62,8 @@ end
 end
 
 @test_reference "references/camera.png" imresize(camera, (64,64))
+@test_throws ErrorException @test_reference "references/wrongfilename.png" imresize(camera, (64,64))
+@test_throws ErrorException @test_reference "references/camera.png" imresize(lena, (64,64))
 # @test_reference "img1.txt" rand(RGB, 10, 10)
 
 # @test_reference "rand.csv" DataTable(v1=[1,2,3], v2=["a","b","c"])
