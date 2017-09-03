@@ -16,5 +16,6 @@ export
 include("utils.jl")
 include("test_reference.jl")
 include("string.jl")
+include("fallback.jl")
 
 end # module

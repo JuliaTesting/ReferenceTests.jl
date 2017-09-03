@@ -61,9 +61,13 @@ end
     @test_reference "references/lena.sha256" convert(Matrix{RGB{Float64}}, lena)
 end
 
-@test_reference "references/camera.png" imresize(camera, (64,64))
-@test_throws ErrorException @test_reference "references/wrongfilename.png" imresize(camera, (64,64))
-@test_throws ErrorException @test_reference "references/camera.png" imresize(lena, (64,64))
-# @test_reference "img1.txt" rand(RGB, 10, 10)
+@testset "images as PNG" begin
+    @test_reference "references/camera.png" imresize(camera, (64,64))
+    @test_throws ErrorException @test_reference "references/wrongfilename.png" imresize(camera, (64,64))
+    @test_throws ErrorException @test_reference "references/camera.png" imresize(lena, (64,64))
+end
 
-# @test_reference "rand.csv" DataTable(v1=[1,2,3], v2=["a","b","c"])
+using DataFrames, CSVFiles
+@testset "DataFrame as CSV" begin
+    @test_reference "references/dataframe.csv" DataFrame(v1=[1,2,3], v2=["a","b","c"])
+end

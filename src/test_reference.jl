@@ -105,6 +105,7 @@ function test_reference(file::File, actual::AbstractArray{<:Colorant}; sigma=one
                 if answer == 'y'
                     save(file, actual)
                 end
+                error("Please run the tests again for any changes to take effect")
             else
                 error("You need to run the tests interactively with 'include(\"test/runtests.jl\")' to update reference images")
             end
@@ -126,6 +127,7 @@ function test_reference(file::File, actual::AbstractArray{<:Colorant}; sigma=one
                     mkpath(dir)
                     save(file, actual)
                 end
+                error("Please run the tests again for any changes to take effect")
             else
                 error("You need to run the tests interactively with 'include(\"test/runtests.jl\")' to create new reference images")
             end

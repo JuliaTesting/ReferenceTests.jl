@@ -61,6 +61,7 @@ function test_reference_string(file::File, actual::AbstractArray{<:AbstractStrin
                 if answer == 'y'
                     write(path, join(actual, "\n"))
                 end
+                error("Please run the tests again for any changes to take effect")
             else
                 error("You need to run the tests interactively with 'include(\"test/runtests.jl\")' to update reference images")
             end
@@ -78,6 +79,7 @@ function test_reference_string(file::File, actual::AbstractArray{<:AbstractStrin
                     mkpath(dir)
                     write(path, join(actual, "\n"))
                 end
+                error("Please run the tests again for any changes to take effect")
             else
                 error("You need to run the tests interactively with 'include(\"test/runtests.jl\")' to create new reference images")
             end
