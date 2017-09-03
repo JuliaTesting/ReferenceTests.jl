@@ -9,9 +9,6 @@ makedocs(
     linkcheck = !("skiplinks" in ARGS),
     pages = Any[
         "Home" => "index.md",
-        "Library" => Any[
-            "Public" => "public.md",
-        ],
     ],
     html_prettyurls = !("local" in ARGS),
 )
