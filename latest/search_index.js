@@ -21,7 +21,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "Contents",
     "category": "section",
-    "text": "Pages = [\"public.md\"]"
+    "text": "Pages = [\"index.md\"]"
 },
 
 {
@@ -29,7 +29,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "Index",
     "category": "section",
-    "text": "Pages = [\"public.md\"]"
+    "text": "Pages = [\"index.md\"]"
 },
 
 {
