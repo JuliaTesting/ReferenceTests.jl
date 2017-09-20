@@ -36,7 +36,7 @@ end
 # --------------------------------------------------------------------
 
 function test_reference_string(file::File, actual::AbstractString)
-    test_reference_string(file, [actual])
+    test_reference_string(file, split(actual, "\n"))
 end
 
 function test_reference_string(file::File, actual::AbstractArray{<:AbstractString})
