@@ -1,4 +1,4 @@
-using ImageInTerminal, Images, TestImages, Base.Test, ColorTypes, FixedPointNumbers
+using Base.Test, ImageInTerminal, Images, TestImages,  ColorTypes, FixedPointNumbers
 
 # check for ambiguities
 refambs = detect_ambiguities(ImageInTerminal, Base, Core)
@@ -40,6 +40,16 @@ end
     @test_reference "references/string2.txt" @io2str show(IOContext(::IO, limit=true, displaysize=(5,5)), A)
     @test_reference "references/string3.txt" 1337
     @test_reference "references/string4.txt" @io2str show(::IO, MIME"text/plain"(), Int64.(collect(1:5)))
+
+    @test_reference "references/string5.txt" """
+        This is a
+        multiline string that does not end with a new line."""
+
+    @test_reference "references/string6.txt" """
+        This on the other hand is a
+        multiline string that does indeed end with a new line.
+    """
+
     @test_throws ErrorException @test_reference "references/string1.txt" "intentionally wrong to check that this message prints"
     @test_throws ErrorException @test_reference "references/wrong.txt" "intentional error to check that this message prints"
 end

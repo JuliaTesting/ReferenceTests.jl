@@ -43,7 +43,7 @@ function test_reference_string(file::File, actual::AbstractArray{<:AbstractStrin
     path = file.filename
     dir, filename = splitdir(path)
     try
-        reference = replace.(readlines(path), ["\n"], [""])
+        reference = split(readstring(path), "\n")
         try
             @assert reference == actual # to throw error
             @test true # to increase test counter if reached
