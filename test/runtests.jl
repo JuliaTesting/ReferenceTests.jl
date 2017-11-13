@@ -3,7 +3,7 @@ using Base.Test, ImageInTerminal, Images, TestImages,  ColorTypes, FixedPointNum
 # check for ambiguities
 refambs = detect_ambiguities(ImageInTerminal, Base, Core)
 using ReferenceTests
-ambs = detect_ambiguities(ReferenceTests, ImageInTerminal, Base, Core)|
+ambs = detect_ambiguities(ReferenceTests, ImageInTerminal, Base, Core)
 @test length(setdiff(ambs, refambs)) == 0
 
 # load/create some example images
