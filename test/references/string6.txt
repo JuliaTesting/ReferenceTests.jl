@@ -1,0 +1,2 @@
+    This on the other hand is a
+    multiline string that does indeed end with a new line.
