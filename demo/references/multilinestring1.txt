@@ -1,0 +1,6 @@
+    Julia is a modern language
+    for technical computing
+    With applications is:
+     - Scientific Computing
+     - Data Science
+     - General Purpose Computing
