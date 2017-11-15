@@ -36,25 +36,50 @@ end
 # --------------------------------------------------------------------
 
 function test_reference_string(file::File, actual::AbstractString)
+    test_reference_string(file, split(actual, "\n"))
+end
+
+function test_reference_string(file::File, actual::AbstractArray{<:AbstractString})
     path = file.filename
     dir, filename = splitdir(path)
     try
-        reference = readstring(path)
-        @test reference == actual
+        reference = split(readstring(path), "\n")
+        try
+            @assert reference == actual # to throw error
+            @test true # to increase test counter if reached
+        catch # test failed
+            println("Test for \"$filename\" failed.")
+            println("- REFERENCE -------------------")
+            println.(reference)
+            println("-------------------------------")
+            println("- ACTUAL ----------------------")
+            println.(actual)
+            println("-------------------------------")
+            if isinteractive()
+                print("Replace reference with actual result (path: $path)? [y/n] ")
+                answer = first(readline())
+                if answer == 'y'
+                    write(path, join(actual, "\n"))
+                end
+                error("Please run the tests again for any changes to take effect")
+            else
+                error("You need to run the tests interactively with 'include(\"test/runtests.jl\")' to update reference images")
+            end
+        end
     catch ex
         if ex isa SystemError # File doesn't exist
             println("Reference file for \"$filename\" does not exist.")
             println("- NEW CONTENT -----------------")
-            println(actual)
+            println.(actual)
             println("-------------------------------")
             if isinteractive()
                 print("Create reference file with above content (path: $path)? [y/n] ")
                 answer = first(readline())
                 if answer == 'y'
                     mkpath(dir)
-                    write(path, actual)
+                    write(path, join(actual, "\n"))
                 end
-                warn("Please run the tests again for any changes to take effect")
+                error("Please run the tests again for any changes to take effect")
             else
                 error("You need to run the tests interactively with 'include(\"test/runtests.jl\")' to create new reference images")
             end
