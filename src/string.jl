@@ -40,24 +40,15 @@ function test_reference_string(file::File, actual::AbstractString)
     dir, filename = splitdir(path)
     try
         reference = readstring(path)
-        @test reference == actual
+        @test reference == actual # This is not really what should be used but... for now
     catch ex
         if ex isa SystemError # File doesn't exist
-            println("Reference file for \"$filename\" does not exist.")
-            println("- NEW CONTENT -----------------")
-            println(actual)
-            println("-------------------------------")
-            if isinteractive()
-                print("Create reference file with above content (path: $path)? [y/n] ")
-                answer = first(readline())
-                if answer == 'y'
-                    mkpath(dir)
-                    write(path, actual)
-                end
-                warn("Please run the tests again for any changes to take effect")
-            else
-                error("You need to run the tests interactively with 'include(\"test/runtests.jl\")' to create new reference images")
-            end
+            inner =  Fail(:test, :(@test_reference "$path" (missing)  == actualcodehere),
+                                                # ^This is a lie as to the original expression, it is almost good enough except should use original code for actual
+                                                Expr(:comparison, "", :(==), actual), # This makes simple diffs work
+                                                @__LINE__) #WRONG: Should be the line of the test that failed
+            res = MissingFile(path, actual, inner)
+            record(get_testset(), res)
         else
             throw(ex)
         end
