@@ -40,14 +40,15 @@ function test_reference_string(file::File, actual::AbstractString)
     dir, filename = splitdir(path)
     try
         reference = readstring(path)
-        @test reference == actual # This is not really what should be used but... for now
+        if reference != actual
+            res = MismatchedFile(path, reference, actual)
+            record(get_testset(), res)
+        else
+            @test true # they are equal so make it pass
+        end
     catch ex
         if ex isa SystemError # File doesn't exist
-            inner =  Fail(:test,
-                          :(@test_reference "$path" (missing)  == actual),
-                          Expr(:comparison, "", :(==), actual), # This makes simple diffs work
-                          @__LINE__) #WRONG: Should be the line of the test that failed
-            res = MissingFile(path, actual, inner)
+            res = MissingFile(path, actual)
             record(get_testset(), res)
         else
             throw(ex)
