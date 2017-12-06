@@ -5,13 +5,9 @@ using FileIO
 using ImageInTerminal
 using ColorTypes
 using SHA
-using Requires
 
 using Base.Test
-import Base.Test: record, finish
-using Base.Test: DefaultTestSet, AbstractTestSet
-using Base.Test: get_testset_depth, scrub_backtrace, get_testset
-using Base.Test: Result, Pass, Fail, Error
+using Base.Test: record, get_testset, Result, Pass, Fail, Error
 
 
 export

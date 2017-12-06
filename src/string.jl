@@ -41,15 +41,13 @@ function test_reference_string(file::File, actual::AbstractString)
     try
         reference = readstring(path)
         if reference != actual
-            res = MismatchedFile(path, reference, actual)
-            record(get_testset(), res)
+            process_result(MismatchedFile(path, reference, actual))
         else
             @test true # they are equal so make it pass
         end
     catch ex
         if ex isa SystemError # File doesn't exist
-            res = MissingFile(path, actual)
-            record(get_testset(), res)
+            process_result(MissingFile(path, actual))
         else
             throw(ex)
         end
