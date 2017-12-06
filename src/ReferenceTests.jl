@@ -5,6 +5,7 @@ using FileIO
 using ImageInTerminal
 using ColorTypes
 using SHA
+using Requires
 
 using Base.Test
 import Base.Test: record, finish
@@ -14,7 +15,6 @@ using Base.Test: Result, Pass, Fail, Error
 
 
 export
-    ReferenceTestSet,
     @withcolor,
     @io2str,
     @test_reference

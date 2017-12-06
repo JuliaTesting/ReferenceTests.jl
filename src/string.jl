@@ -43,10 +43,10 @@ function test_reference_string(file::File, actual::AbstractString)
         @test reference == actual # This is not really what should be used but... for now
     catch ex
         if ex isa SystemError # File doesn't exist
-            inner =  Fail(:test, :(@test_reference "$path" (missing)  == actualcodehere),
-                                                # ^This is a lie as to the original expression, it is almost good enough except should use original code for actual
-                                                Expr(:comparison, "", :(==), actual), # This makes simple diffs work
-                                                @__LINE__) #WRONG: Should be the line of the test that failed
+            inner =  Fail(:test,
+                          :(@test_reference "$path" (missing)  == actual),
+                          Expr(:comparison, "", :(==), actual), # This makes simple diffs work
+                          @__LINE__) #WRONG: Should be the line of the test that failed
             res = MissingFile(path, actual, inner)
             record(get_testset(), res)
         else

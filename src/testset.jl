@@ -1,23 +1,15 @@
-
 struct MissingFile <: Result
     path::String
     content::String
     inner::Fail
 end
 
-struct ReferenceTestSet{T<:AbstractTestSet} <: AbstractTestSet
-    desc::AbstractString
-    parent::T
-end
-
-ReferenceTestSet(desc) = ReferenceTestSet(desc, get_testset())
 
 
-record(rts::ReferenceTestSet, res::Result) = record(rts.parent, res)
+record(ts::AbstractTestSet, res::MissingFile) = _record(ts, res)
 
-
-function record(rts::ReferenceTestSet, res::MissingFile)
-    record(rts.parent, res.inner)
+function _record(ts, res::MissingFile)
+    record(ts, res.inner)
 
     dir,filename = splitdir(res.path)
     println("Reference file for \"$filename\" does not exist.")
@@ -33,4 +25,7 @@ function record(rts::ReferenceTestSet, res::MissingFile)
 end
 
 
-finish(::ReferenceTestSet) = nothing # Not doing anything at end of set.
+@require TestSetExtensions begin
+    # For compatibility, as otherwise this gives an ambiguity error
+    record(ts::TestSetExtensions.ExtendedTestSet, res::MissingFile) = _record(ts, res)
+end
