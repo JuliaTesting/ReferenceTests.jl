@@ -6,7 +6,8 @@ function test_reference(file::File{format"TXT"}, actual)
 end
 
 function test_reference(file::File{format"TXT"}, actual::AbstractArray{<:AbstractString})
-    test_reference_string(file, actual)
+    str = join(actual,"\n")
+    test_reference_string(file, str)
 end
 
 # Image as txt using ImageInTerminal
@@ -34,6 +35,7 @@ function test_reference(file::File{format"SHA256"}, actual::AbstractArray{<:Colo
 end
 
 # --------------------------------------------------------------------
+# Core functionality
 
 function test_reference_string(file::File, actual::AbstractString)
     path = file.filename
