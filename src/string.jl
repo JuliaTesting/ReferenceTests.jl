@@ -5,15 +5,15 @@ function test_reference(file::File{format"TXT"}, actual)
     test_reference_string(file, string(actual))
 end
 
-function test_reference(file::File{format"TXT"}, actual::AbstractArray{<:AbstractString})
+function test_reference(file::File{format"TXT"}, actual::AbstractVector)
     str = join(actual,"\n")
     test_reference_string(file, str)
 end
 
 # Image as txt using ImageInTerminal
 function test_reference(file::File{format"TXT"}, actual::AbstractArray{<:Colorant}; size = (20,40))
-    str = @withcolor ImageInTerminal.encodeimg(ImageInTerminal.SmallBlocks(), ImageInTerminal.TermColor256(), actual, size...)[1]
-    test_reference_string(file, str)
+    data = @withcolor ImageInTerminal.encodeimg(ImageInTerminal.SmallBlocks(), ImageInTerminal.TermColor256(), actual, size...)[1]
+    test_reference(file, data)
 end
 
 # --------------------------------------------------------------------
