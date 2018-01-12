@@ -25,9 +25,28 @@ Throws an ErrorException if it errors or fails: so you can use `@test_throws Err
 """
 run_isolated_test(filename, data) = run(`$(Base.julia_cmd()) -e """
     using Base.Test; using ReferenceTests;
-    @test_reference $(repr(filename)) $(repr(data))
+    @test_reference $(repr(joinpath(Base.@__DIR__, filename))) $(repr(data))
     """`) == nothing
 
+
+using ReferenceTests.ensure_abspath
+@testset "ensure_abspath" begin
+    eg_abs = JULIA_HOME
+    @assert isabspath(eg_abs)
+    eg_dir = Pkg.dir()
+    @assert isabspath(eg_dir)
+
+    @test ensure_abspath(eg_dir, eg_abs) == eg_abs
+    @test ensure_abspath("", eg_abs) == eg_abs
+    @test ensure_abspath(nothing, eg_abs) == eg_abs
+    
+    eg_rel = "a.txt"
+    @assert isabspath(pwd())
+
+    @test ensure_abspath(eg_dir, eg_rel) == joinpath(eg_dir, eg_rel)
+    @test ensure_abspath("", eg_rel) == joinpath(pwd(), eg_rel)
+    @test ensure_abspath(nothing, eg_rel) == joinpath(pwd(), eg_rel)
+end
 
 
 @testset "io2str" begin
@@ -49,7 +68,7 @@ end
 
 @testset "string as txt" begin
     foo = "foo"
-    @test_reference "references/string1.txt" foo * "bar"
+    @show @macroexpand @test_reference "references/string1.txt" foo * "bar"
     @test_reference "references/string1.txt" [foo * "bar"]
     A = ones(30,30)
     @test_reference "references/string2.txt" @io2str show(IOContext(::IO, limit=true, displaysize=(5,5)), A)
