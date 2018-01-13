@@ -15,6 +15,40 @@ copy!(view(cameras,:,:,2), camera)
 square = Gray{N0f8}[0.1 0.2 0.3; 0.4 0.5 0.6; 0.7 0.6 0.9]
 rgb_rect = rand(RGB{N0f8}, 2, 3)
 
+
+"""
+    run_isolated_test(filename, data)
+
+Runs a expression in another process.
+Returns true if it passes (so you can uses `@test run_isolated_test...)`
+Throws an ErrorException if it errors or fails: so you can use `@test_throws ErrorException run_isolated_test(...)`
+"""
+run_isolated_test(filename, data) = run(`$(Base.julia_cmd()) -e """
+    using Base.Test; using ReferenceTests;
+    @test_reference $(repr(joinpath(Base.@__DIR__, filename))) $(repr(data))
+    """`) == nothing
+
+
+using ReferenceTests.ensure_abspath
+@testset "ensure_abspath" begin
+    eg_abs = JULIA_HOME
+    @assert isabspath(eg_abs)
+    eg_dir = Pkg.dir()
+    @assert isabspath(eg_dir)
+
+    @test ensure_abspath(eg_dir, eg_abs) == eg_abs
+    @test ensure_abspath("", eg_abs) == eg_abs
+    @test ensure_abspath(nothing, eg_abs) == eg_abs
+    
+    eg_rel = "a.txt"
+    @assert isabspath(pwd())
+
+    @test ensure_abspath(eg_dir, eg_rel) == joinpath(eg_dir, eg_rel)
+    @test ensure_abspath("", eg_rel) == joinpath(pwd(), eg_rel)
+    @test ensure_abspath(nothing, eg_rel) == joinpath(pwd(), eg_rel)
+end
+
+
 @testset "io2str" begin
     @test_throws ArgumentError eval(@macroexpand @io2str(::IO))
     @test_throws ArgumentError @io2str(2)
@@ -50,8 +84,14 @@ end
         multiline string that does indeed end with a new line.
     """
 
-    @test_throws ErrorException @test_reference "references/string1.txt" "intentionally wrong to check that this message prints"
-    @test_throws ErrorException @test_reference "references/wrong.txt" "intentional error to check that this message prints"
+    @testset "Ensure failures can occur" begin
+       
+            # `run` throws ErrorException on nonzero exit status
+        @test_throws ErrorException run_isolated_test("references/string1.txt", "intentionally wrong to check that this message prints")
+        @test_throws ErrorException run_isolated_test("references/wrong.txt", "intentionally wrong to check this message prints")
+
+    end
+
 end
 
 @testset "images as txt using ImageInTerminal" begin

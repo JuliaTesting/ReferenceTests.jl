@@ -48,12 +48,29 @@ cases.
 ```
 """
 macro test_reference(reference, actual, kws...)
-    expr = :(test_reference(abspath(joinpath(Base.@__DIR__, $(esc(reference)))), $(esc(actual))))
+    expr = :(test_reference(
+                            ensure_abspath(@__DIR__, $(esc(reference))),
+                            $(esc(actual))
+                           )
+            )
     for kw in kws
         (kw isa Expr && kw.head == :(=)) || error("invalid signature for @test_reference")
         push!(expr.args, Expr(:kw, kw.args...))
     end
     expr
+end
+
+function ensure_abspath(dir, filepath)
+    if isabspath(filepath)
+        return filepath
+    else
+        if dir == nothing || dir == "" # REPL or julia -e
+            dir = pwd()
+        end
+        ret = joinpath(dir, filepath)
+        @assert isabspath(ret)
+        return ret
+    end
 end
 
 function test_reference(filename::AbstractString, actual; kw...)
