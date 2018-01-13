@@ -40,9 +40,12 @@ end
 function createfile(path, content, message)
     dir = dirname(path)
     if isinteractive()
-        print(message)
-        answer = first(readline())
-        if answer == 'y'
+        answer = ""
+        while length(answer) == 0
+            print(message)
+            answer = strip(readline())
+        end
+        if first(answer) == 'y'
             mkpath(dir)
             write(path, content)
             warn("Please run the tests again for any changes to take effect")
