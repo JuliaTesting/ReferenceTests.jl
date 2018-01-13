@@ -68,7 +68,7 @@ end
 
 @testset "string as txt" begin
     foo = "foo"
-    @show @macroexpand @test_reference "references/string1.txt" foo * "bar"
+    @test_reference "references/string1.txt" foo * "bar"
     @test_reference "references/string1.txt" [foo * "bar"]
     A = ones(30,30)
     @test_reference "references/string2.txt" @io2str show(IOContext(::IO, limit=true, displaysize=(5,5)), A)

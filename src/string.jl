@@ -51,7 +51,7 @@ function test_reference_string(file::File, actual::AbstractString)
         if ex isa SystemError # File doesn't exist
             process_result(MissingFile(path, actual))
         else
-            throw(ex)
+            rethrow(ex)
         end
     end
 end
