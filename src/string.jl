@@ -60,8 +60,10 @@ function test_reference_string(file::File, actual::AbstractArray{<:AbstractStrin
                 answer = first(readline())
                 if answer == 'y'
                     write(path, join(actual, "\n"))
+                    warn("Please run the tests again for any changes to take effect")
+                else
+                    @test false
                 end
-                error("Please run the tests again for any changes to take effect")
             else
                 error("You need to run the tests interactively with 'include(\"test/runtests.jl\")' to update reference images")
             end
