@@ -1,8 +1,6 @@
 #################################################
 # Rendering
 # This controls how failures are displayed
-
-
 abstract type RenderMode end
 struct Diff <: RenderMode end
 
@@ -10,7 +8,6 @@ abstract type BeforeAfter <: RenderMode end
 struct BeforeAfterLimited <: BeforeAfter end
 struct BeforeAfterFull <: BeforeAfter end
 struct BeforeAfterImage <: BeforeAfter end
-
 
 render_item(::RenderMode, item) = println(item)
 
@@ -38,13 +35,11 @@ function render(mode::BeforeAfter, reference, actual)
     println("-------------------------------")
 end
 
-
 function render(::Diff, reference, actual)
     println("- DIFF ------------------------")
     @withcolor println(deepdiff(reference, actual))
     println("-------------------------------")
 end
-
 
 ## 1 arg form render for new content
 
@@ -53,8 +48,6 @@ function render(mode::RenderMode, actual)
     render_item(mode, actual)
     println("-------------------------------")
 end
-
-
 
 #######################################
 # IO
@@ -69,8 +62,6 @@ end
 function loadfile(T, file::TextFile)
     readstring(file.filename)
 end
-
-
 
 function savefile(file::File, content)
     save(file, content) # Fallback to FileIO

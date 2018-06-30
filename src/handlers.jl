@@ -10,7 +10,6 @@ function test_reference(file::File{format"TXT"}, actual::AbstractArray{<:Abstrac
     _test_reference(Diff(), file, str)
 end
 
-
 # ---------------------------------
 # Image
 
@@ -28,7 +27,6 @@ function test_reference(file::File, actual::AbstractArray{<:Colorant}; sigma=one
         end
     end
 end
-
 
 # Image as txt using ImageInTerminal
 function test_reference(file::File{format"TXT"}, actual::AbstractArray{<:Colorant}; size = (20,40))
@@ -68,6 +66,3 @@ function test_reference(file::File, actual)
         _test_reference(BeforeAfterLimited(), file, actual)
     end
 end
-
-
-
