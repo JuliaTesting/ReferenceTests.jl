@@ -4,7 +4,7 @@ using Base.Test, ImageInTerminal, Images, TestImages,  ColorTypes, FixedPointNum
 refambs = detect_ambiguities(ImageInTerminal, Base, Core)
 using ReferenceTests
 ambs = detect_ambiguities(ReferenceTests, ImageInTerminal, Base, Core)
-@test length(setdiff(ambs, refambs)) == 0
+@test Set(setdiff(ambs, refambs)) == Set{Tuple{Method,Method}}()
 
 # load/create some example images
 lena = testimage("lena_color_256")
@@ -52,6 +52,9 @@ end
 
     @test_throws ErrorException @test_reference "references/string1.txt" "intentionally wrong to check that this message prints"
     @test_throws ErrorException @test_reference "references/wrong.txt" "intentional error to check that this message prints"
+    @test_throws ErrorException @test_reference "references/string5.txt" """
+        This is an incorrect
+        multiline string that does not end with a new line."""
 end
 
 @testset "images as txt using ImageInTerminal" begin

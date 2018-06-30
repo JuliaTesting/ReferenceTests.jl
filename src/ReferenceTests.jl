@@ -6,6 +6,7 @@ using FileIO
 using ImageInTerminal
 using ColorTypes
 using SHA
+using DeepDiffs
 
 export
 
@@ -15,7 +16,7 @@ export
 
 include("utils.jl")
 include("test_reference.jl")
-include("string.jl")
-include("fallback.jl")
+include("core.jl")
+include("handlers.jl")
 
 end # module
