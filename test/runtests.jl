@@ -4,7 +4,7 @@ using Base.Test, ImageInTerminal, Images, TestImages,  ColorTypes, FixedPointNum
 refambs = detect_ambiguities(ImageInTerminal, Base, Core)
 using ReferenceTests
 ambs = detect_ambiguities(ReferenceTests, ImageInTerminal, Base, Core)
-@test length(setdiff(ambs, refambs)) == 0
+@test Set(setdiff(ambs, refambs)) == Set{Tuple{Method,Method}}()
 
 # load/create some example images
 lena = testimage("lena_color_256")
