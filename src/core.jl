@@ -10,22 +10,19 @@ struct BeforeAfterFull <: BeforeAfter end
 struct BeforeAfterImage <: BeforeAfter end
 
 render_item(::RenderMode, item) = println(item)
-
 function render_item(::BeforeAfterLimited, item)
     show(IOContext(STDOUT, limit=true, displaysize=(20,80)), "text/plain", item)
     println()
 end
-
 function render_item(::BeforeAfterImage, item)
     str_item = @withcolor ImageInTerminal.encodeimg(ImageInTerminal.SmallBlocks(), ImageInTerminal.TermColor256(), item, 20, 40)[1]
-	println("eltype: ", eltype(item))
+    println("eltype: ", eltype(item))
     println("size: ", map(length, indices(item)))
     println("thumbnail:")
     println.(str_item)
 end
 
 ## 2 arg form render for comparing
-
 function render(mode::BeforeAfter, reference, actual)
     println("- REFERENCE -------------------")
     render_item(mode, reference)
@@ -34,7 +31,6 @@ function render(mode::BeforeAfter, reference, actual)
     render_item(mode, actual)
     println("-------------------------------")
 end
-
 function render(::Diff, reference, actual)
     println("- DIFF ------------------------")
     @withcolor println(deepdiff(reference, actual))
@@ -42,7 +38,6 @@ function render(::Diff, reference, actual)
 end
 
 ## 1 arg form render for new content
-
 function render(mode::RenderMode, actual)
     println("- NEW CONTENT -----------------")
     render_item(mode, actual)
