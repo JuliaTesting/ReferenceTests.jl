@@ -55,7 +55,7 @@ end
     @test_throws ErrorException @test_reference "references/string5.txt" """
         This is an incorrect
         multiline string that does not end with a new line."""
-    end
+end
 
 @testset "images as txt using ImageInTerminal" begin
     #@test_throws MethodError @test_reference "references/fail.txt" rand(2,2)
