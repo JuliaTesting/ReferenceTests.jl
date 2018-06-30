@@ -52,7 +52,10 @@ end
 
     @test_throws ErrorException @test_reference "references/string1.txt" "intentionally wrong to check that this message prints"
     @test_throws ErrorException @test_reference "references/wrong.txt" "intentional error to check that this message prints"
-end
+    @test_throws ErrorException @test_reference "references/string5.txt" """
+        This is a incorrect
+        multiline string that does not end with a new line."""
+    end
 
 @testset "images as txt using ImageInTerminal" begin
     #@test_throws MethodError @test_reference "references/fail.txt" rand(2,2)
