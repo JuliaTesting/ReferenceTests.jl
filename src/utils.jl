@@ -87,3 +87,21 @@ function withcolor(fun)
         eval(Base, :(have_color = $old_color))
     end
 end
+
+# --------------------------------------------------------------------
+
+function input_bool(prompt)
+    while true
+        println(prompt, " [y/n]")
+        response = readline()
+        length(response)==0 && continue
+        reply = lowercase(first(strip(response)))
+        if reply == 'y'
+            return true
+        elseif reply =='n'
+            return false
+        end
+        # Otherwise loop and repeat the prompt
+    end
+end
+

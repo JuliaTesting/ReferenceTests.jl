@@ -87,9 +87,7 @@ function _test_reference(equiv, rendermode, file::File, actual::T) where T
             println("Test for \"$filename\" failed.")
             render(rendermode, reference, actual)
             if isinteractive()
-                print("Replace reference with actual result (path: $path)? [y/n] ")
-                answer = first(readline())
-                if answer == 'y'
+                if input_bool("Replace reference with actual result (path: $path)?")
                     savefile(file, actual)
                     warn("Please run the tests again for any changes to take effect")
                 else
@@ -107,9 +105,7 @@ function _test_reference(equiv, rendermode, file::File, actual::T) where T
             println("Reference file for \"$filename\" does not exist.")
             render(rendermode, actual)
             if isinteractive()
-                print("Create reference file with above content (path: $path)? [y/n] ")
-                answer = first(readline())
-                if answer == 'y'
+                if input_bool("Create reference file with above content (path: $path)?")
                     mkpath(dir)
                     savefile(file, actual)
                     warn("Please run the tests again for any changes to take effect")
