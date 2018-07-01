@@ -13,16 +13,18 @@ end
 # ---------------------------------
 # Image
 
-function test_reference(file::File, actual::AbstractArray{<:Colorant}; sigma=ones(length(indices(actual))), eps=0.01)
-    _test_reference(BeforeAfterImage(), file, actual) do reference, actual
-        try
-            Images.@test_approx_eq_sigma_eps(reference, actual, sigma, eps)
-            return true
-        catch err
-            if err isa ErrorException
-                return false
-            else
-                rethrow()
+@require Images begin
+    function test_reference(file::File, actual::AbstractArray{<:Colorant}; sigma=ones(length(indices(actual))), eps=0.01)
+        _test_reference(BeforeAfterImage(), file, actual) do reference, actual
+            try
+                Images.@test_approx_eq_sigma_eps(reference, actual, sigma, eps)
+                return true
+            catch err
+                if err isa ErrorException
+                    return false
+                else
+                    rethrow()
+                end
             end
         end
     end

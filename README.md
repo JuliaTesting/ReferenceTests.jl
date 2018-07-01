@@ -12,7 +12,7 @@ to be used alongside `Base.Test`._
 |:------------------:|:---------------------:|:-----------------:|
 | [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](LICENSE.md) [![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://evizero.github.io/ReferenceTests.jl/latest) | [![Pkg Eval 0.6](http://pkg.julialang.org/badges/ReferenceTests_0.6.svg)](http://pkg.julialang.org/?pkg=ReferenceTests) [![Pkg Eval 0.7](http://pkg.julialang.org/badges/ReferenceTests_0.7.svg)](http://pkg.julialang.org/?pkg=ReferenceTests) | [![Travis](https://travis-ci.org/Evizero/ReferenceTests.jl.svg?branch=master)](https://travis-ci.org/Evizero/ReferenceTests.jl) [![AppVeyor](https://ci.appveyor.com/api/projects/status/fle0090403pdgnxi?svg=true)](https://ci.appveyor.com/project/Evizero/referencetests-jl) [![Coverage Status](https://coveralls.io/repos/Evizero/ReferenceTests.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/Evizero/ReferenceTests.jl?branch=master) |
 
-**Note:** This package is still in early development. So far most
+**Note:** This package is development. So far most
 attention went into comparing images and strings. The `FileIO`
 fallbacks are thus yet not fully fleshed out and may change over
 time.
@@ -80,7 +80,9 @@ using ReferenceTests, TestImages
 Note that while a text-based storage of reference images can be
 convenient, proper image formats (e.g. `png`) are also supported
 by the package. Those, however, will require the proper `FileIO`
-backends to be installed.
+backends to be installed, and the *Images.jl* package to be 
+installed and loaded.
+(i.e. do `using Images; using ReferenceTests` for image support)
 
 Another special file extension is `sha256` which will cause the
 hash of the result of the given expression to be stored and

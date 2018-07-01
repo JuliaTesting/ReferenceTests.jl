@@ -1,8 +1,9 @@
 module ReferenceTests
 
 using Base.Test
-using Images
+using Requires
 using FileIO
+using ImageCore
 using ImageInTerminal
 using ColorTypes
 using SHA
