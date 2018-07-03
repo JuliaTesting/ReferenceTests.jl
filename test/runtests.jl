@@ -15,24 +15,27 @@ copy!(view(cameras,:,:,2), camera)
 square = Gray{N0f8}[0.1 0.2 0.3; 0.4 0.5 0.6; 0.7 0.6 0.9]
 rgb_rect = rand(RGB{N0f8}, 2, 3)
 
+struct NonPropagatingTestSet <: AbstractTestset
+	description::String
+	results::Vector
+end
+NonPropagatingTestSet(desc) = NonPropagatingTestSet(desc, [])
+record(ts::NonPropagatingTestSet, t) = (push!(ts.results, t); t)
+function finish(ts::ReportingTestSet)
+    # Teststs are supposed to throw errors if they have failures and no parent testset
+    # or if they do have a parent, then push themselves into the parents results
+    # but we are going to do none of that.
+end
 
-"""
-Run the encludes code in a sperate process, 
-and make sure that process fails.
-"""
+
 macro ensure_fails_tests(expr)
-	quote
-		code = quote
-			using Base.Test,
-			using ReferenceTests
-			$expr
-		end
-		command = (Base.cmd_gen(((Base.julia_cmd(),), ("-e",), (code,))))
-		ps = spawn(command)
-		wait(ps) # don't actually run it Async
-		kill(ps)
-		@test ps.exitcode != 0
+    quote
+        ts = @testset NonPropagatingTestSet "Ensure Fails" begin
+            $expr
 	end
+	@assert length(ts.results)==1
+	@test ts.results[1] isa Test.Fail
+    end
 end
 
 @testset "io2str" begin
