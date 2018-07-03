@@ -94,7 +94,8 @@ function _test_reference(equiv, rendermode, file::File, actual::T) where T
                     @test false
                 end
             else
-                error("You need to run the tests interactively with 'include(\"test/runtests.jl\")' to update reference images")
+                warn("You need to run the tests interactively with 'include(\"test/runtests.jl\")' to update reference images")
+                @test false
             end
         end
     catch ex
@@ -113,7 +114,8 @@ function _test_reference(equiv, rendermode, file::File, actual::T) where T
                     @test false
                 end
             else
-                error("You need to run the tests interactively with 'include(\"test/runtests.jl\")' to create new reference images")
+                warn("You need to run the tests interactively with 'include(\"test/runtests.jl\")' to create new reference images")
+                @test false
             end
         else
             rethrow(ex)
