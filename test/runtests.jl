@@ -15,6 +15,26 @@ copy!(view(cameras,:,:,2), camera)
 square = Gray{N0f8}[0.1 0.2 0.3; 0.4 0.5 0.6; 0.7 0.6 0.9]
 rgb_rect = rand(RGB{N0f8}, 2, 3)
 
+
+"""
+Run the encludes code in a sperate process, 
+and make sure that process fails.
+"""
+macro ensure_fails_tests(expr)
+	quote
+		code = quote
+			using Base.Test,
+			using ReferenceTests
+			$expr
+		end
+		command = (Base.cmd_gen(((Base.julia_cmd(),), ("-e",), (code,))))
+		ps = spawn(command)
+		wait(ps) # don't actually run it Async
+		kill(ps)
+		@test ps.exitcode != 0
+	end
+end
+
 @testset "io2str" begin
     @test_throws ArgumentError eval(@macroexpand @io2str(::IO))
     @test_throws ArgumentError @io2str(2)
@@ -50,11 +70,11 @@ end
         multiline string that does indeed end with a new line.
     """
 
-    @test_throws ErrorException @test_reference "references/string1.txt" "intentionally wrong to check that this message prints"
-    @test_throws ErrorException @test_reference "references/wrong.txt" "intentional error to check that this message prints"
-    @test_throws ErrorException @test_reference "references/string5.txt" """
+    @ensure_fails_tests(@test_reference "references/string1.txt" "intentionally wrong to check that this message prints")
+    @ensure_fails_tests(@test_reference "references/wrong.txt" "intentional error to check that this message prints")
+    @ensure_fails_tests(@test_reference "references/string5.txt" """
         This is an incorrect
-        multiline string that does not end with a new line."""
+        multiline string that does not end with a new line.""")
 end
 
 @testset "images as txt using ImageInTerminal" begin
@@ -78,13 +98,13 @@ end
 
 @testset "images as PNG" begin
     @test_reference "references/camera.png" imresize(camera, (64,64))
-    @test_throws ErrorException @test_reference "references/wrongfilename.png" imresize(camera, (64,64))
-    @test_throws ErrorException @test_reference "references/camera.png" imresize(lena, (64,64))
+    @ensure_fails_tests(@test_reference "references/wrongfilename.png" imresize(camera, (64,64)))
+    @ensure_fails_tests(@test_reference "references/camera.png" imresize(lena, (64,64)))
 end
 
 using DataFrames, CSVFiles
 @testset "DataFrame as CSV" begin
     @test_reference "references/dataframe.csv" DataFrame(v1=[1,2,3], v2=["a","b","c"])
-    @test_throws ErrorException @test_reference "references/wrongfilename.csv" DataFrame(v1=[1,2,3], v2=["a","b","c"])
-    @test_throws ErrorException @test_reference "references/dataframe.csv" DataFrame(v1=[1,2,3], v2=["c","b","c"])
+    @ensure_fails_tests(@test_reference "references/wrongfilename.csv" DataFrame(v1=[1,2,3], v2=["a","b","c"]))
+    @ensure_fails_tests(@test_reference "references/dataframe.csv" DataFrame(v1=[1,2,3], v2=["c","b","c"]))
 end
