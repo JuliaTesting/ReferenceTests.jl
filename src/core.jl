@@ -11,13 +11,13 @@ struct BeforeAfterImage <: BeforeAfter end
 
 render_item(::RenderMode, item) = println(item)
 function render_item(::BeforeAfterLimited, item)
-    show(IOContext(STDOUT, limit=true, displaysize=(20,80)), "text/plain", item)
+    show(IOContext(stdout, limit=true, displaysize=(20,80)), "text/plain", item)
     println()
 end
 function render_item(::BeforeAfterImage, item)
     str_item = @withcolor ImageInTerminal.encodeimg(ImageInTerminal.SmallBlocks(), ImageInTerminal.TermColor256(), item, 20, 40)[1]
     println("eltype: ", eltype(item))
-    println("size: ", map(length, indices(item)))
+    println("size: ", map(length, axes(item)))
     println("thumbnail:")
     println.(str_item)
 end
@@ -55,7 +55,7 @@ function loadfile(T, file::File)
 end
 
 function loadfile(T, file::TextFile)
-    readstring(file.filename)
+    read(file.filename,String)
 end
 
 function savefile(file::File, content)
@@ -99,7 +99,7 @@ function _test_reference(equiv, rendermode, file::File, actual::T) where T
         end
     catch ex
         if ex isa SystemError || # File doesn't exist
-            (is_apple() && ex isa MethodError) ||  # MethodError is for OSX for some reason
+            (Sys.isapple() && ex isa MethodError) ||  # MethodError is for OSX for some reason
             (ex isa ErrorException && startswith(ex.msg, "unable to open"))
 
             println("Reference file for \"$filename\" does not exist.")

@@ -1,35 +1,41 @@
-using Base.Test, ImageInTerminal, Images, TestImages,  ColorTypes, FixedPointNumbers
+using Test
+using ImageInTerminal, Images, TestImages,  ColorTypes, FixedPointNumbers
+using Random
 
+@testset "ReferenceTests" begin
 # check for ambiguities
 refambs = detect_ambiguities(ImageInTerminal, Base, Core)
 using ReferenceTests
+
 ambs = detect_ambiguities(ReferenceTests, ImageInTerminal, Base, Core)
 @test Set(setdiff(ambs, refambs)) == Set{Tuple{Method,Method}}()
+
+cd(@__DIR__)
 
 # load/create some example images
 lena = testimage("lena_color_256")
 camera = testimage("cameraman")
 cameras = similar(camera, size(camera)..., 2)
-copy!(view(cameras,:,:,1), camera)
-copy!(view(cameras,:,:,2), camera)
+copyto!(view(cameras,:,:,1), camera)
+copyto!(view(cameras,:,:,2), camera)
 square = Gray{N0f8}[0.1 0.2 0.3; 0.4 0.5 0.6; 0.7 0.6 0.9]
 rgb_rect = rand(RGB{N0f8}, 2, 3)
 
 @testset "io2str" begin
-    @test_throws ArgumentError eval(@macroexpand @io2str(::IO))
+    @test_throws LoadError eval(@macroexpand @io2str(::IO))
     @test_throws ArgumentError @io2str(2)
     @test_throws ArgumentError @io2str(string(2))
     @test @io2str(print(::IO, "foo")) == "foo"
     @test @io2str(println(::IO, "foo")) == "foo\n"
     @test @io2str(show(::IO, "foo")) == "\"foo\""
     A = ones(30,30)
-    @test @io2str(show(IOContext(::IO, limit=true, displaysize=(5,5)), A)) == "[1.0 1.0 … 1.0 1.0; 1.0 1.0 … 1.0 1.0; … ; 1.0 1.0 … 1.0 1.0; 1.0 1.0 … 1.0 1.0]"
+    @test @io2str(show(IOContext(::IO, :limit => true, :displaysize => (5,5)), A)) == "[1.0 1.0 … 1.0 1.0; 1.0 1.0 … 1.0 1.0; … ; 1.0 1.0 … 1.0 1.0; 1.0 1.0 … 1.0 1.0]"
 end
 
 @testset "withcolor" begin
     @test_throws ArgumentError @withcolor throw(ArgumentError("foo"))
     @test @withcolor Base.have_color == true
-    @test @withcolor @io2str(print_with_color(:green, ::IO, "test")) == "\e[32mtest\e[39m"
+    @test_broken @withcolor @io2str(printstyled(::IO, "test", color=:green)) == "\e[32mtest\e[39m"
 end
 
 @testset "string as txt" begin
@@ -37,7 +43,7 @@ end
     @test_reference "references/string1.txt" foo * "bar"
     @test_reference "references/string1.txt" [foo * "bar"]
     A = ones(30,30)
-    @test_reference "references/string2.txt" @io2str show(IOContext(::IO, limit=true, displaysize=(5,5)), A)
+    @test_reference "references/string2.txt" @io2str show(IOContext(::IO, :limit=>true, :displaysize=>(5,5)), A)
     @test_reference "references/string3.txt" 1337
     @test_reference "references/string4.txt" @io2str show(::IO, MIME"text/plain"(), Int64.(collect(1:5)))
 
@@ -68,7 +74,7 @@ end
     foo = "foo"
     @test_reference "references/string1.sha256" foo * "bar"
     A = ones(30,30)
-    @test_reference "references/string2.sha256" @io2str show(IOContext(::IO, limit=true, displaysize=(5,5)), A)
+    @test_reference "references/string2.sha256" @io2str show(IOContext(::IO, :limit=>true, :displaysize=>(5,5)), A)
 end
 
 @testset "images as SHA" begin
@@ -82,9 +88,13 @@ end
     @test_throws ErrorException @test_reference "references/camera.png" imresize(lena, (64,64))
 end
 
+if false # FIXME, waiting for v0.7-compatible CSVFiles and TextParse
 using DataFrames, CSVFiles
 @testset "DataFrame as CSV" begin
     @test_reference "references/dataframe.csv" DataFrame(v1=[1,2,3], v2=["a","b","c"])
     @test_throws ErrorException @test_reference "references/wrongfilename.csv" DataFrame(v1=[1,2,3], v2=["a","b","c"])
     @test_throws ErrorException @test_reference "references/dataframe.csv" DataFrame(v1=[1,2,3], v2=["c","b","c"])
+end
+end
+
 end

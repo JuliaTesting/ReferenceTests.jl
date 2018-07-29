@@ -33,7 +33,7 @@ function io2str_impl(expr::Expr)
         esc(quote
             $nvar = Base.IOBuffer()
             $expr
-            Base.readstring(Base.seek($nvar, 0))
+            Base.read(Base.seek($nvar, 0),String)
         end)
     else
         :(throw(ArgumentError("Invalid use of `@io2str` macro: The given expression `$($(string(expr)))` does not contain `::IO` placeholder in a supported manner")))
@@ -81,10 +81,10 @@ end
 function withcolor(fun)
     old_color = Base.have_color
     try
-        eval(Base, :(have_color = true))
+        Core.eval(Base, :(have_color = true))
         fun()
     finally
-        eval(Base, :(have_color = $old_color))
+        Core.eval(Base, :(have_color = $old_color))
     end
 end
 

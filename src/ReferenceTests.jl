@@ -1,15 +1,15 @@
 module ReferenceTests
 
-using Base.Test
+using Test
 using Images
 using FileIO
 using ImageInTerminal
 using ColorTypes
 using SHA
 using DeepDiffs
+using Random
 
 export
-
     @withcolor,
     @io2str,
     @test_reference
