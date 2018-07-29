@@ -48,7 +48,7 @@ cases.
 ```
 """
 macro test_reference(reference, actual, kws...)
-    dir = dirname(Base.source_path())
+    dir = Base.source_dir()
     expr = :(test_reference(abspath(joinpath($dir, $(esc(reference)))), $(esc(actual))))
     for kw in kws
         (kw isa Expr && kw.head == :(=)) || error("invalid signature for @test_reference")

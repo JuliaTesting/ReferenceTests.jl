@@ -10,8 +10,6 @@ using ReferenceTests
 ambs = detect_ambiguities(ReferenceTests, ImageInTerminal, Base, Core)
 @test Set(setdiff(ambs, refambs)) == Set{Tuple{Method,Method}}()
 
-cd(@__DIR__)
-
 # load/create some example images
 lena = testimage("lena_color_256")
 camera = testimage("cameraman")
@@ -35,7 +33,7 @@ end
 @testset "withcolor" begin
     @test_throws ArgumentError @withcolor throw(ArgumentError("foo"))
     @test @withcolor Base.have_color == true
-    @test_broken @withcolor @io2str(printstyled(::IO, "test", color=:green)) == "\e[32mtest\e[39m"
+    @test @withcolor @io2str(printstyled(IOContext(::IO, :color => true), "test", color=:green)) == "\e[32mtest\e[39m"
 end
 
 @testset "string as txt" begin
