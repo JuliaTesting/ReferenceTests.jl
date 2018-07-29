@@ -33,7 +33,7 @@ function io2str_impl(expr::Expr)
         esc(quote
             $nvar = Base.IOBuffer()
             $expr
-            Base.read(Base.seek($nvar, 0),String)
+            Base.read(Base.seek($nvar, 0), String)
         end)
     else
         :(throw(ArgumentError("Invalid use of `@io2str` macro: The given expression `$($(string(expr)))` does not contain `::IO` placeholder in a supported manner")))
@@ -94,7 +94,7 @@ function input_bool(prompt)
     while true
         println(prompt, " [y/n]")
         response = readline()
-        length(response)==0 && continue
+        length(response) == 0 && continue
         reply = lowercase(first(strip(response)))
         if reply == 'y'
             return true
