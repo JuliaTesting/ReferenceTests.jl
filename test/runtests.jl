@@ -2,6 +2,13 @@ using Test
 using ImageInTerminal, Images, TestImages,  ColorTypes, FixedPointNumbers
 using Random
 
+if isinteractive()
+    @info ("In interactive use, one should respond \"n\" when the program"
+           * " offers to create or replace files associated with some tests.")
+else
+    @info ("Four tests should correctly report failure in the transcript"
+           * " (but not the test summary).")
+end
 @testset "ReferenceTests" begin
 # check for ambiguities
 refambs = detect_ambiguities(ImageInTerminal, Base, Core)
@@ -86,13 +93,11 @@ end
     @test_throws ErrorException @test_reference "references/camera.png" imresize(lena, (64,64))
 end
 
-if false # FIXME, waiting for v0.7-compatible CSVFiles and TextParse
 using DataFrames, CSVFiles
 @testset "DataFrame as CSV" begin
     @test_reference "references/dataframe.csv" DataFrame(v1=[1,2,3], v2=["a","b","c"])
     @test_throws ErrorException @test_reference "references/wrongfilename.csv" DataFrame(v1=[1,2,3], v2=["a","b","c"])
     @test_throws ErrorException @test_reference "references/dataframe.csv" DataFrame(v1=[1,2,3], v2=["c","b","c"])
-end
 end
 
 end

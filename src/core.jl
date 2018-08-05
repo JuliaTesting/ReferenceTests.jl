@@ -11,7 +11,7 @@ struct BeforeAfterImage <: BeforeAfter end
 
 render_item(::RenderMode, item) = println(item)
 function render_item(::BeforeAfterLimited, item)
-    show(IOContext(stdout, limit=true, displaysize=(20,80)), "text/plain", item)
+    show(IOContext(stdout, :limit=>true, :displaysize=>(20,80)), "text/plain", item)
     println()
 end
 function render_item(::BeforeAfterImage, item)
