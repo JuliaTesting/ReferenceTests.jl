@@ -9,12 +9,14 @@ else
     @info ("Four tests should correctly report failure in the transcript"
            * " (but not the test summary).")
 end
-@testset "ReferenceTests" begin
 # check for ambiguities
 refambs = detect_ambiguities(ImageInTerminal, Base, Core)
-using ReferenceTests
 
+using ReferenceTests
 ambs = detect_ambiguities(ReferenceTests, ImageInTerminal, Base, Core)
+
+@testset "ReferenceTests" begin
+
 @test Set(setdiff(ambs, refambs)) == Set{Tuple{Method,Method}}()
 
 # load/create some example images
