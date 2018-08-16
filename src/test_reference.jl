@@ -48,7 +48,8 @@ cases.
 ```
 """
 macro test_reference(reference, actual, kws...)
-    expr = :(test_reference(abspath(joinpath(Base.@__DIR__, $(esc(reference)))), $(esc(actual))))
+    dir = Base.source_dir()
+    expr = :(test_reference(abspath(joinpath($dir, $(esc(reference)))), $(esc(actual))))
     for kw in kws
         (kw isa Expr && kw.head == :(=)) || error("invalid signature for @test_reference")
         push!(expr.args, Expr(:kw, kw.args...))
@@ -64,10 +65,11 @@ function query_extended(filename)
     file, ext = splitext(filename)
     # TODO: make this less hacky
     if uppercase(ext) == ".TXT"
-        File{format"TXT"}(filename)
+        res = File{format"TXT"}(filename)
     elseif uppercase(ext) == ".SHA256"
-        File{format"SHA256"}(filename)
+        res = File{format"SHA256"}(filename)
     else
-        query(filename)
+        res = query(filename)
     end
+    res
 end

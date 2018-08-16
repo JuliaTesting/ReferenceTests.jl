@@ -17,7 +17,7 @@ julia> using ReferenceTests
 julia> @io2str print(::IO, "Hello World")
 "Hello World"
 
-julia> @io2str show(IOContext(::IO, limit=true, displaysize=(10,10)), "text/plain", ones(10))
+julia> @io2str show(IOContext(::IO, :limit=>true, :displaysize=>(10,10)), "text/plain", ones(10))
 "10-element Array{Float64,1}:\\n 1.0\\n 1.0\\n 1.0\\n ⋮  \\n 1.0\\n 1.0"
 ```
 """
@@ -33,7 +33,7 @@ function io2str_impl(expr::Expr)
         esc(quote
             $nvar = Base.IOBuffer()
             $expr
-            Base.readstring(Base.seek($nvar, 0))
+            Base.read(Base.seek($nvar, 0), String)
         end)
     else
         :(throw(ArgumentError("Invalid use of `@io2str` macro: The given expression `$($(string(expr)))` does not contain `::IO` placeholder in a supported manner")))
@@ -81,10 +81,10 @@ end
 function withcolor(fun)
     old_color = Base.have_color
     try
-        eval(Base, :(have_color = true))
+        Core.eval(Base, :(have_color = true))
         fun()
     finally
-        eval(Base, :(have_color = $old_color))
+        Core.eval(Base, :(have_color = $old_color))
     end
 end
 
@@ -94,7 +94,7 @@ function input_bool(prompt)
     while true
         println(prompt, " [y/n]")
         response = readline()
-        length(response)==0 && continue
+        length(response) == 0 && continue
         reply = lowercase(first(strip(response)))
         if reply == 'y'
             return true
