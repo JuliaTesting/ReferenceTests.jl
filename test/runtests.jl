@@ -92,7 +92,7 @@ end
 
 @testset "images as PNG" begin
     @test_reference "references/camera.png" imresize(camera, (64,64))
-    @test_throws ErrorException @test_reference "references/wrongfilename.png" imresize(camera, (64,64))
+    @test_throws Exception @test_reference "references/wrongfilename.png" imresize(camera, (64,64))
     @test_throws ErrorException @test_reference "references/camera.png" imresize(lena, (64,64))
 end
 
