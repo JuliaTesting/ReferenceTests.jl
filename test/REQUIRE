@@ -1,7 +1,5 @@
 FixedPointNumbers 0.3
-TestImages
+TestImages 0.4
 DataFrames
 CSVFiles 0.3
-@windows ImageMagick
-@linux ImageMagick
-@osx QuartzImageIO
+ImageMagick 0.7

@@ -5,6 +5,7 @@ os:
   - osx
 julia:
   - 0.7
+  - 1.0
   - nightly
 notifications:
   email: false
@@ -25,15 +26,20 @@ matrix:
 #before_script: # homebrew for mac
 #  - if [ $TRAVIS_OS_NAME = osx ]; then brew install gcc; fi
 
+jobs:
+  include:
+    - stage: deploy
+      julia: 1.0
+      os: linux
+      script:
+        - julia -e 'import Pkg; Pkg.clone(pwd()); Pkg.build("ReferenceTests")'
+        - julia -e 'import Pkg; Pkg.add("Documenter")'
+        - julia -e 'import ReferenceTests; ENV["DOCUMENTER_DEBUG"] = "true"; include(joinpath("docs","make.jl"))'
+
 ## uncomment the following lines to override the default test script
 script:
-  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - julia --color=yes -e 'using InteractiveUtils; versioninfo(); import Pkg; Pkg.clone(pwd()); Pkg.build("ReferenceTests")'
-  - julia --color=yes -e 'import Pkg; Pkg.test("ReferenceTests"; coverage=true)'
+    - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+    - julia --check-bounds=yes --color=yes -e 'import Pkg; Pkg.clone(pwd()); Pkg.build("ReferenceTests"); Pkg.test("ReferenceTests"; coverage=true)';
+
 after_success:
-  # push coverage results to Coveralls
-  - julia -e 'import Pkg; import ReferenceTests; cd(joinpath(dirname(pathof(ReferenceTests)),"..")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
-  - julia -e 'import Pkg; Pkg.add("Documenter")'
-  - julia -e 'import ReferenceTests; cd(joinpath(dirname(pathof(ReferenceTests)),"..")); include(joinpath("docs", "make.jl"))'
-  # push coverage results to Codecov
-  #  - julia -e 'cd(Pkg.dir("ReferenceTests")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+  - julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Coveralls.submit(process_folder())'

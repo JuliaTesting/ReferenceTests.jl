@@ -1,4 +1,5 @@
 using Test
+using ImageMagick
 using ImageInTerminal, Images, TestImages,  ColorTypes, FixedPointNumbers
 using Random
 
