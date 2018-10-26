@@ -89,7 +89,7 @@ function _test_reference(equiv, rendermode, file::File, actual::T) where T
             if isinteractive()
                 if input_bool("Replace reference with actual result (path: $path)?")
                     savefile(file, actual)
-                    warn("Please run the tests again for any changes to take effect")
+                    @info("Please run the tests again for any changes to take effect")
                 else
                     @test false
                 end
@@ -108,7 +108,7 @@ function _test_reference(equiv, rendermode, file::File, actual::T) where T
                 if input_bool("Create reference file with above content (path: $path)?")
                     mkpath(dir)
                     savefile(file, actual)
-                    warn("Please run the tests again for any changes to take effect")
+                    @info("Please run the tests again for any changes to take effect")
                 else
                     @test false
                 end
