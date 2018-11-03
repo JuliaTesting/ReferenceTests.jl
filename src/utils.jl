@@ -28,7 +28,7 @@ end
 io2str_impl(arg) = :(throw(ArgumentError("Invalid use of `@io2str` macro: The given argument `$($(string(arg)))` is not an expression.")))
 
 function io2str_impl(expr::Expr)
-    nvar = Symbol("#io#", randstring(4))
+    nvar = gensym("io")
     if replace_expr!(expr, :(::IO), nvar)
         esc(quote
             $nvar = Base.IOBuffer()

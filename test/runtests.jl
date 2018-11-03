@@ -7,7 +7,7 @@ if isinteractive()
     @info ("In interactive use, one should respond \"n\" when the program"
            * " offers to create or replace files associated with some tests.")
 else
-    @info ("Four tests should correctly report failure in the transcript"
+    @info ("Eight tests should correctly report failure in the transcript"
            * " (but not the test summary).")
 end
 # check for ambiguities
@@ -75,6 +75,19 @@ end
     #@test_throws MethodError @test_reference "references/fail.txt" rand(2,2)
     @test_reference "references/camera.txt" camera size=(5,10)
     @test_reference "references/lena.txt" lena
+end
+
+@testset "plain ansi string" begin
+    @test_reference(
+        "references/ansii.txt",
+        @io2str(printstyled(IOContext(::IO, :color=>true), "this should be blue", color=:blue)),
+        render = ReferenceTests.BeforeAfterFull()
+    )
+    @test_throws ErrorException @test_reference(
+        "references/ansii.txt",
+        @io2str(printstyled(IOContext(::IO, :color=>true), "this should be red", color=:red)),
+        render = ReferenceTests.BeforeAfterFull()
+    )
 end
 
 @testset "string as SHA" begin

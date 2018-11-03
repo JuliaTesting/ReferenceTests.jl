@@ -1,13 +1,13 @@
 # --------------------------------------------------------------------
 # plain TXT
 
-function test_reference(file::File{format"TXT"}, actual)
-    _test_reference(Diff(), file, string(actual))
+function test_reference(file::File{format"TXT"}, actual; render = Diff())
+    _test_reference(render, file, string(actual))
 end
 
-function test_reference(file::File{format"TXT"}, actual::AbstractArray{<:AbstractString})
+function test_reference(file::File{format"TXT"}, actual::AbstractArray{<:AbstractString}; render = Diff())
     str = join(actual, '\n')
-    _test_reference(Diff(), file, str)
+    _test_reference(render, file, str)
 end
 
 # ---------------------------------
@@ -29,10 +29,10 @@ function test_reference(file::File, actual::AbstractArray{<:Colorant}; sigma=one
 end
 
 # Image as txt using ImageInTerminal
-function test_reference(file::File{format"TXT"}, actual::AbstractArray{<:Colorant}; size = (20,40))
+function test_reference(file::File{format"TXT"}, actual::AbstractArray{<:Colorant}; size = (20,40), render = BeforeAfterFull())
     strs = @withcolor ImageInTerminal.encodeimg(ImageInTerminal.SmallBlocks(), ImageInTerminal.TermColor256(), actual, size...)[1]
     str = join(strs,'\n')
-    _test_reference(BeforeAfterFull(), file, str)
+    _test_reference(render, file, str)
 end
 
 # --------------------------------------------------------------------
