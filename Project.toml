@@ -27,4 +27,4 @@ ImageMagick = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
 TestImages = "5e47fb64-e119-507b-a336-dd2b206d9990"
 
 [targets]
-test = ["CSVFiles", "DataFrames", "FixedPointNumbers", "ImageMagick", "TestImages", "Test"]
+test = ["CSVFiles", "DataFrames", "FixedPointNumbers", "ImageMagick", "TestImages"]
