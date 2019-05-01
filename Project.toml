@@ -1,7 +1,7 @@
 name = "ReferenceTests"
 uuid = "324d217c-45ce-50fc-942e-d289b448e8cf"
 authors = ["Christof Stocker <stocker.christof@gmail.com>", "Lyndon White <oxinabox@ucc.asn.au>"]
-version = "0.6.0"
+version = "0.6.1"
 
 [deps]
 ColorTypes = "3da002f7-5984-5a60-b8a6-cbb66c0b333f"
