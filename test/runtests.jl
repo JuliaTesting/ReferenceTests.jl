@@ -71,6 +71,10 @@ end
         multiline string that does not end with a new line."""
 end
 
+@testset "string as unknown file type" begin
+    @test_reference "references/string1.nottxt" "This is not a .txt file, but it should be treated as such.\n"
+end
+
 @testset "images as txt using ImageInTerminal" begin
     #@test_throws MethodError @test_reference "references/fail.txt" rand(2,2)
     @test_reference "references/camera.txt" camera size=(5,10)
