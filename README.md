@@ -12,10 +12,6 @@ to be used alongside `Base.Test`._
 |:------------------:|:---------------------:|:-----------------:|
 | [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](LICENSE.md) [![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://evizero.github.io/ReferenceTests.jl/latest) | [![Pkg Eval 0.6](http://pkg.julialang.org/badges/ReferenceTests_0.6.svg)](http://pkg.julialang.org/?pkg=ReferenceTests) [![Pkg Eval 0.7](http://pkg.julialang.org/badges/ReferenceTests_0.7.svg)](http://pkg.julialang.org/?pkg=ReferenceTests) | [![Travis](https://travis-ci.org/Evizero/ReferenceTests.jl.svg?branch=master)](https://travis-ci.org/Evizero/ReferenceTests.jl) [![AppVeyor](https://ci.appveyor.com/api/projects/status/fle0090403pdgnxi?svg=true)](https://ci.appveyor.com/project/Evizero/referencetests-jl) [![Coverage Status](https://coveralls.io/repos/Evizero/ReferenceTests.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/Evizero/ReferenceTests.jl?branch=master) |
 
-**Note:** This package is still in early development. So far most
-attention went into comparing images and strings. The `FileIO`
-fallbacks are thus yet not fully fleshed out and may change over
-time.
 
 ## Introduction
 
@@ -99,21 +95,6 @@ on `@test_reference` within Julia's REPL:
 ```julia
 ?@test_reference
 ```
-
-## Installation
-
-This package is registered in `METADATA.jl` and can be installed
-as usual.
-
-```julia
-Pkg.add("ReferenceTests")
-```
-
-If you intend to use it for testing on CI, make sure to add the
-package name `ReferenceTests` to your `test/REQUIRE` file.
-Further note, that depending on what file-format you use to store
-your references, you may need to add additional dependencies to
-your `test/REQUIRE` file.
 
 ## License
 
