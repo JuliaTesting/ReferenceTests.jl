@@ -77,7 +77,8 @@ macro test_reference(reference, actual, kws...)
     expr = :(test_reference(abspath(joinpath($dir, $(esc(reference)))), $(esc(actual))))
     for kw in kws
         (kw isa Expr && kw.head == :(=)) || error("invalid signature for @test_reference")
-        push!(expr.args, Expr(:kw, kw.args...))
+        k, v = kw.args
+        push!(expr.args, Expr(:kw, k, esc(v)))
     end
     expr
 end
