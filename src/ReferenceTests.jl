@@ -18,5 +18,6 @@ include("utils.jl")
 include("test_reference.jl")
 include("core.jl")
 include("handlers.jl")
+include("equality_metrics.jl")
 
 end # module

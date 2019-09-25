@@ -104,4 +104,3 @@ function input_bool(prompt)
         # Otherwise loop and repeat the prompt
     end
 end
-

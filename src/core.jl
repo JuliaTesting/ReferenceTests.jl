@@ -55,7 +55,11 @@ function loadfile(T, file::File)
 end
 
 function loadfile(T, file::TextFile)
-    read(file.filename,String)
+    read(file.filename, String)
+end
+
+function loadfile(::Type{<:Number}, file::File{format"TXT"})
+    parse(Float64, loadfile(String, file))
 end
 
 function savefile(file::File, content)
@@ -71,10 +75,6 @@ end
 # Final function
 # all other functions should hit one of this eventually
 # Which handles the actual testing and user prompting
-
-function _test_reference(rendermode, file::File, actual)
-    _test_reference(isequal, rendermode, file, actual)
-end
 
 function _test_reference(equiv, rendermode, file::File, actual::T) where T
     path = file.filename

@@ -53,6 +53,7 @@ end
     A = ones(30,30)
     @test_reference "references/string2.txt" @io2str show(IOContext(::IO, :limit=>true, :displaysize=>(5,5)), A)
     @test_reference "references/string3.txt" 1337
+    @test_reference "references/string3.txt" 1338 by=(ref, x)->isapprox(ref, x; atol=10)
     @test_reference "references/string4.txt" @io2str show(::IO, MIME"text/plain"(), Int64.(collect(1:5)))
 
     @test_reference "references/string5.txt" """
