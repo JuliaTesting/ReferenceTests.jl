@@ -30,7 +30,7 @@ compared. The contents is treated as:
 ## Images
 
 Images are compared _approximately_ using a different `by` to ignore most encoding
-and decoding errors. The default value is `Images.@test_approx_eq_sigma_eps`.
+and decoding errors. The default function is generated from [`psnr_equality`](@ref).
 
 The file can be either common image files (e.g., `*.png`), which are handled by
 `FileIO`, or text-coded `*.txt` files, which is handled by `ImageInTerminal`.
@@ -65,8 +65,8 @@ preprocessing.
 # can only check for equality (no tolerance possible)
 @test_reference "references/camera.sha256" testimage("cameraman")
 
-# test images using ImageQualityIndexes.PSNR
-@test_reference "references/camera.png" testimage("cameraman") by=(x,y)->psnr(x,y)>25
+# test images with custom psnr threshold
+@test_reference "references/camera.png" testimage("cameraman") by=psnr_equality(20)
 
 # test number with absolute tolerance 10
 @test_reference "references/string3.txt" 1338 by=(ref, x)->isapprox(ref, x; atol=10)
