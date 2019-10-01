@@ -79,44 +79,44 @@ end
 function _test_reference(equiv, rendermode, file::File, actual::T) where T
     path = file.filename
     dir, filename = splitdir(path)
-    try
-        reference = loadfile(T, file)
-        if equiv(reference, actual)
-            @test true # to increase test counter if reached
-        else # test failed
-            println("Test for \"$filename\" failed.")
-            render(rendermode, reference, actual)
-            if isinteractive()
-                if input_bool("Replace reference with actual result (path: $path)?")
-                    savefile(file, actual)
-                    @info("Please run the tests again for any changes to take effect")
-                else
-                    @test false
-                end
-            else
-                error("You need to run the tests interactively with 'include(\"test/runtests.jl\")' to update reference images")
-            end
-        end
-    catch ex
-        if ex isa SystemError || # File doesn't exist
-            (Sys.isapple() && ex isa MethodError) ||  # MethodError is for OSX for some reason
-            (ex isa ErrorException && startswith(ex.msg, "unable to open"))
 
-            println("Reference file for \"$filename\" does not exist.")
-            render(rendermode, actual)
-            if isinteractive()
-                if input_bool("Create reference file with above content (path: $path)?")
-                    mkpath(dir)
-                    savefile(file, actual)
-                    @info("Please run the tests again for any changes to take effect")
-                else
-                    @test false
-                end
-            else
-                error("You need to run the tests interactively with 'include(\"test/runtests.jl\")' to create new reference images")
-            end
+    # preprocessing when reference file doesn't exists
+    if !isfile(path)
+        println("Reference file for \"$filename\" does not exist.")
+        render(rendermode, actual)
+
+        if !isinteractive()
+            error("You need to run the tests interactively with 'include(\"test/runtests.jl\")' to create new reference images")
+        end
+
+        if !input_bool("Create reference file with above content (path: $path)?")
+            @test false
         else
-            rethrow(ex)
+            mkpath(dir)
+            savefile(file, actual)
+            @info("Please run the tests again for any changes to take effect")
+        end
+
+        return nothing # skip current test case
+    end
+
+    reference = loadfile(T, file)
+    if equiv(reference, actual)
+        @test true # to increase test counter if reached
+    else
+        # post-processing when test fails
+        println("Test for \"$filename\" failed.")
+        render(rendermode, reference, actual)
+
+        if !isinteractive()
+            error("You need to run the tests interactively with 'include(\"test/runtests.jl\")' to update reference images")
+        end
+
+        if !input_bool("Replace reference with actual result (path: $path)?")
+            @test false
+        else
+            savefile(file, actual)
+            @info("Please run the tests again for any changes to take effect")
         end
     end
 end
