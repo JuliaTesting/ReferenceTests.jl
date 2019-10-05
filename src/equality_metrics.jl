@@ -19,6 +19,11 @@ This function is useful for image comparison, for example:
 """
 function psnr_equality(threshold=25)
     function (ref, x)
+        if size(ref) != size(x)
+            # trigger a test fail instead of throwing error
+            @warn("test fails because size(ref) $(size(ref)) != size(x) $(size(x))")
+            return false
+        end
         rst = _psnr(ref, x)
         if rst >= threshold
             return true
