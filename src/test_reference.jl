@@ -83,8 +83,11 @@ macro test_reference(reference, actual, kws...)
     expr
 end
 
-function test_reference(filename::AbstractString, actual; kw...)
-    test_reference(query_extended(filename), actual; kw...)
+function test_reference(
+    filename::AbstractString, raw_actual;
+    by = nothing, render = nothing, kw...)
+
+    test_reference(query_extended(filename), raw_actual, by, render; kw...)
 end
 
 function query_extended(filename)

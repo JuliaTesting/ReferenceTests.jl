@@ -1,7 +1,21 @@
+"""
+    default_equality(reference, actual) -> f
+
+Infer a suitable equality comparison method `f` according to input types.
+
+`f` is a function that satisfies signature `f(reference, actual)::Bool`. If `f` outputs
+`true`, it indicates that `reference` and `actual` are "equal" in the sense of `f`.
+"""
+default_equality(reference, actual) = isequal
+function default_equality(
+    reference::AbstractArray{<:Colorant},
+    actual::AbstractArray{<:Colorant})
+
+    return psnr_equality()
+end
+
 # ---------------------------------
 # Image
-
-default_image_equality(reference, actual) = psnr_equality()(reference, actual)
 
 """
     psnr_equality(threshold=25) -> f
