@@ -99,6 +99,7 @@ function test_reference(
 
     path = file.filename
     dir, filename = splitdir(path)
+    testmode = TESTMODE()
 
     # infer the default rendermode here
     # since `nothing` is always passed to this method from
@@ -112,19 +113,11 @@ function test_reference(
         println("Reference file for \"$filename\" does not exist.")
         render(rendermode, raw_actual)
 
-        if !isinteractive()
-            error("You need to run the tests interactively with 'include(\"test/runtests.jl\")' to create new reference images")
-        end
-
-        if !input_bool("Create reference file with above content (path: $path)?")
+        continue_test = _create_new_reference(testmode, file, raw_actual)
+        if !continue_test
             @test false
-        else
-            mkpath(dir)
-            savefile(file, raw_actual)
-            @info("Please run the tests again for any changes to take effect")
+            return nothing
         end
-
-        return nothing # skip current test case
     end
 
     # file exists
@@ -137,21 +130,63 @@ function test_reference(
     end
 
     if equiv(reference, actual)
-        @test true # to increase test counter if reached
+        @test true
     else
         # post-processing when test fails
         println("Test for \"$filename\" failed.")
         render(rendermode, reference, actual)
 
-        if !isinteractive()
-            error("You need to run the tests interactively with 'include(\"test/runtests.jl\")' to update reference images")
-        end
-
-        if !input_bool("Replace reference with actual result (path: $path)?")
-            @test false
-        else
-            savefile(file, actual)
-            @info("Please run the tests again for any changes to take effect")
-        end
+        increase_fail_count = _update_reference(testmode, file, reference, actual)
+        increase_fail_count && @test false
     end
+end
+
+function _create_new_reference(::NonInteractiveMode, file::File, actual)::Bool
+    error("You need to run the tests interactively with 'include(\"test/runtests.jl\")' to update reference images")
+
+    # # automatically create new reference file and continue test
+    # path = file.filename
+    # dir, filename = splitdir(path)
+
+    # println("Create new reference file \"$filename\".")
+    # mkpath(dir)
+    # savefile(file, actual)
+
+    # continue_test = true
+    # return continue_test
+end
+
+function _create_new_reference(::InteractiveMode, file::File, actual)::Bool
+    path = file.filename
+    dir = splitdir(path)[1]
+
+    if !input_bool("Create reference file with above content (path: $path)?")
+        continue_test = false
+    else
+        mkpath(dir)
+        savefile(file, actual)
+        continue_test = true
+    end
+    return continue_test
+end
+
+function _update_reference(::NonInteractiveMode, file::File, reference, actual)::Bool
+    error("You need to run the tests interactively with 'include(\"test/runtests.jl\")' to update reference images")
+
+    # # Do not update reference
+    # increase_fail_count = true
+    # return increase_fail_count
+end
+
+function _update_reference(::InteractiveMode, file::File, reference, actual)::Bool
+    path = file.filename
+
+    if !input_bool("Replace reference with actual result (path: $path)?")
+        increase_fail_count = true
+    else
+        savefile(file, actual)
+        @info("Please run the tests again for any changes to take effect")
+        increase_fail_count = false
+    end
+    return increase_fail_count
 end

@@ -15,6 +15,7 @@ export
     @test_reference,
     psnr_equality
 
+include("testmode.jl")
 include("utils.jl")
 include("test_reference.jl")
 include("fileio.jl")
