@@ -6,7 +6,7 @@ if isinteractive()
     @info ("In interactive use, one should respond \"n\" when the program"
            * " offers to create or replace files associated with some tests.")
 else
-    @info ("Eight tests should correctly report failure in the transcript"
+    @info ("Nine tests should correctly report failure in the transcript"
            * " (but not the test summary).")
 end
 # check for ambiguities
@@ -112,6 +112,7 @@ end
     @test_reference "references/camera.png" imresize(camera, (64,64)) by=psnr_equality(25)
     @test_throws Exception @test_reference "references/wrongfilename.png" imresize(camera, (64,64))
     @test_throws ErrorException @test_reference "references/camera.png" imresize(lena, (64,64))
+    @test_throws Exception @test_reference "references/camera.png" camera # unequal size
 end
 
 using DataFrames, CSVFiles
