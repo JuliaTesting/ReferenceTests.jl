@@ -17,8 +17,8 @@ export
 
 include("utils.jl")
 include("test_reference.jl")
-include("core.jl")
-include("handlers.jl")
+include("fileio.jl")
 include("equality_metrics.jl")
+include("render.jl")
 
 end # module
