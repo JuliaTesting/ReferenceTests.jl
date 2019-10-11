@@ -1,3 +1,43 @@
+#######################################
+# IO
+# Right now this basically just extends FileIO to support some things as text files
+
+const TextFile = Union{File{format"TXT"}, File{format"SHA256"}}
+
+function loadfile(T, file::File)
+    T(load(file)) # Fallback to FileIO
+end
+
+function loadfile(T, file::TextFile)
+    read(file.filename, String)
+end
+
+function loadfile(::Type{<:Number}, file::File{format"TXT"})
+    parse(Float64, loadfile(String, file))
+end
+
+function savefile(file::File, content)
+    save(file, content) # Fallback to FileIO
+end
+
+function savefile(file::TextFile, content)
+    write(file.filename, content)
+end
+
+function query_extended(filename)
+    file, ext = splitext(filename)
+    # TODO: make this less hacky
+    if uppercase(ext) == ".SHA256"
+        res = File{format"SHA256"}(filename)
+    else
+        res = query(filename)
+        if res isa File{DataFormat{:UNKNOWN}}
+            res = File{format"TXT"}(filename)
+        end
+    end
+    res
+end
+
 """
     _convert(T::Type{<:DataFormat}, x; kw...) -> out
 

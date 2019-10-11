@@ -89,17 +89,3 @@ function test_reference(
 
     test_reference(query_extended(filename), raw_actual, by, render; kw...)
 end
-
-function query_extended(filename)
-    file, ext = splitext(filename)
-    # TODO: make this less hacky
-    if uppercase(ext) == ".SHA256"
-        res = File{format"SHA256"}(filename)
-    else
-        res = query(filename)
-        if res isa File{DataFormat{:UNKNOWN}}
-            res = File{format"TXT"}(filename)
-        end
-    end
-    res
-end
