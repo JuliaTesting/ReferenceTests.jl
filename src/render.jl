@@ -38,14 +38,14 @@ function render(::MIME"text/plain", mode::BeforeAfter, reference, actual)
     render_item(mode, actual)
     println("-------------------------------")
 end
-
 function render(::MIME"image/png", mode::BeforeAfterImage, reference, actual)
     fill_value = zero(eltype(reference))
     out = paddedviews(fill_value, reference, actual)
     println("- REFERENCE --------|--------- ACTUAL -")
     display(hcat(out...))
 end
-function render(::MIME"text/plain", ::Diff, reference, actual)
+
+function render(::Diff, reference, actual)
     println("- DIFF ------------------------")
     @withcolor println(deepdiff(reference, actual))
     println("-------------------------------")
