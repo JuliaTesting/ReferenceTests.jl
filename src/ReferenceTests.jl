@@ -8,6 +8,7 @@ using ImageInTerminal
 using SHA
 using DeepDiffs
 using Random
+using PaddedViews
 
 export
     @withcolor,

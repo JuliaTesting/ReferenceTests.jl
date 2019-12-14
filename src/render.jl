@@ -24,6 +24,13 @@ end
 
 ## 2 arg form render for comparing
 function render(mode::BeforeAfter, reference, actual)
+    if showable(MIME("image/png"), actual)
+        render(MIME("image/png"), mode, reference, actual)
+    else
+        render(MIME("text/plain"), mode, reference, actual)
+    end
+end
+function render(::MIME"text/plain", mode::BeforeAfter, reference, actual)
     println("- REFERENCE -------------------")
     render_item(mode, reference)
     println("-------------------------------")
@@ -31,7 +38,14 @@ function render(mode::BeforeAfter, reference, actual)
     render_item(mode, actual)
     println("-------------------------------")
 end
-function render(::Diff, reference, actual)
+
+function render(::MIME"image/png", mode::BeforeAfterImage, reference, actual)
+    fill_value = zero(eltype(reference))
+    out = paddedviews(zero(RGB{eltype(eltype(reference))}), reference, actual)
+    println("- REFERENCE --------|--------- ACTUAL -")
+    display(hcat(out...))
+end
+function render(::MIME"text/plain", ::Diff, reference, actual)
     println("- DIFF ------------------------")
     @withcolor println(deepdiff(reference, actual))
     println("-------------------------------")
@@ -39,10 +53,15 @@ end
 
 ## 1 arg form render for new content
 function render(mode::RenderMode, actual)
-    println("- NEW CONTENT -----------------")
-    render_item(mode, actual)
-    println("-------------------------------")
+    if showable(MIME("image/png"), actual)
+        display(actual)
+    else
+        println("- NEW CONTENT -----------------")
+        render_item(mode, actual)
+        println("-------------------------------")
+    end
 end
+
 
 """
     default_rendermode(::DataFormat, actual)
