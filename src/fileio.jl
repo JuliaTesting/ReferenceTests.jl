@@ -9,7 +9,7 @@ function loadfile(T, file::File)
 end
 
 function loadfile(T, file::TextFile)
-    read(file.filename, String)
+    replace(read(file.filename, String), "\r"=>"")
 end
 
 function loadfile(::Type{<:Number}, file::File{format"TXT"})
