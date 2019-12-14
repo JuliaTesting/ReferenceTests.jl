@@ -41,7 +41,7 @@ end
 
 function render(::MIME"image/png", mode::BeforeAfterImage, reference, actual)
     fill_value = zero(eltype(reference))
-    out = paddedviews(zero(RGB{eltype(eltype(reference))}), reference, actual)
+    out = paddedviews(fill_value, reference, actual)
     println("- REFERENCE --------|--------- ACTUAL -")
     display(hcat(out...))
 end
