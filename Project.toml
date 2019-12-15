@@ -14,6 +14,8 @@ SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
+DeepDiffs = "1.1"
+Distances = "0.7, 0.8"
 FileIO = "1"
 ImageCore = "0.8.1"
 ImageInTerminal = "0.3, 0.4"
