@@ -57,7 +57,7 @@ default_rendermode(::Type{<:DataFormat}, ::AbstractArray{<:Colorant}) = BeforeAf
 default_rendermode(::Type{DataFormat{:TXT}}, ::Any) = Diff()
 default_rendermode(::Type{DataFormat{:TXT}}, ::AbstractString) = Diff()
 default_rendermode(::Type{DataFormat{:TXT}}, ::Number) = BeforeAfterFull()
-default_rendermode(::Type{DataFormat{:TXT}}, ::AbstractArray{<:Colorant}) = BeforeAfterFull()
+default_rendermode(::Type{DataFormat{:TXT}}, ::AbstractArray{<:Colorant}) = BeforeAfterImage()
 
 # SHA256
 default_rendermode(::Type{DataFormat{:SHA256}}, ::Any) = BeforeAfterFull()
