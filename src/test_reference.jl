@@ -107,9 +107,11 @@ function test_reference(
         rendermode = default_rendermode(F, raw_actual)
     end
 
+    actual = _convert(F, raw_actual; kw...)
     # preprocessing when reference file doesn't exists
     if !isfile(path)
         println("Reference file for \"$filename\" does not exist.")
+        # TODO: move encoding out from render
         render(rendermode, raw_actual)
 
         if !isinteractive()
@@ -120,7 +122,7 @@ function test_reference(
             @test false
         else
             mkpath(dir)
-            savefile(file, raw_actual)
+            savefile(file, actual)
             @info("Please run the tests again for any changes to take effect")
         end
 
@@ -128,7 +130,6 @@ function test_reference(
     end
 
     # file exists
-    actual = _convert(F, raw_actual; kw...)
     reference = loadfile(T, file)
 
     if equiv === nothing
