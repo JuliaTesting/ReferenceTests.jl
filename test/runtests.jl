@@ -64,9 +64,9 @@ end
         multiline string that does indeed end with a new line.
     """
 
-    @test_throws ErrorException @test_reference "references/string1.txt" "intentionally wrong to check that this message prints"
-    @test_throws ErrorException @test_reference "references/wrong.txt" "intentional error to check that this message prints"
-    @test_throws ErrorException @test_reference "references/string5.txt" """
+    @test_reference_broken "references/string1.txt" "intentionally wrong to check that this message prints"
+    @test_reference_broken "references/wrong.txt" "intentional error to check that this message prints"
+    @test_reference_broken "references/string5.txt" """
         This is an incorrect
         multiline string that does not end with a new line."""
 end
@@ -88,7 +88,7 @@ end
         @io2str(printstyled(IOContext(::IO, :color=>true), "this should be blue", color=:blue)),
         render = ReferenceTests.BeforeAfterFull()
     )
-    @test_throws ErrorException @test_reference(
+    @test_reference_broken(
         "references/ansii.txt",
         @io2str(printstyled(IOContext(::IO, :color=>true), "this should be red", color=:red)),
         render = ReferenceTests.BeforeAfterFull()
@@ -111,16 +111,16 @@ end
 @testset "images as PNG" begin
     @test_reference "references/camera.png" imresize(camera, (64,64))
     @test_reference "references/camera.png" imresize(camera, (64,64)) by=psnr_equality(25)
-    @test_throws Exception @test_reference "references/wrongfilename.png" imresize(camera, (64,64))
-    @test_throws ErrorException @test_reference "references/camera.png" imresize(lena, (64,64))
-    @test_throws Exception @test_reference "references/camera.png" camera # unequal size
+    @test_reference_broken "references/wrongfilename.png" imresize(camera, (64,64))
+    @test_reference_broken "references/camera.png" imresize(lena, (64,64))
+    @test_reference_broken "references/camera.png" camera # unequal size
 end
 
 using DataFrames, CSVFiles
 @testset "DataFrame as CSV" begin
     @test_reference "references/dataframe.csv" DataFrame(v1=[1,2,3], v2=["a","b","c"])
-    @test_throws ErrorException @test_reference "references/wrongfilename.csv" DataFrame(v1=[1,2,3], v2=["a","b","c"])
-    @test_throws ErrorException @test_reference "references/dataframe.csv" DataFrame(v1=[1,2,3], v2=["c","b","c"])
+    @test_reference_broken "references/wrongfilename.csv" DataFrame(v1=[1,2,3], v2=["a","b","c"])
+    @test_reference_broken "references/dataframe.csv" DataFrame(v1=[1,2,3], v2=["c","b","c"])
 end
 
 end
