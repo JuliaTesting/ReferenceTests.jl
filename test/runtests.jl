@@ -65,7 +65,6 @@ end
     """
 
     @test_throws ErrorException @test_reference "references/string1.txt" "intentionally wrong to check that this message prints"
-    @test_throws ErrorException @test_reference "references/wrong.txt" "intentional error to check that this message prints"
     @test_throws ErrorException @test_reference "references/string5.txt" """
         This is an incorrect
         multiline string that does not end with a new line."""
@@ -77,7 +76,7 @@ end
 
 @testset "images as txt using ImageInTerminal" begin
     #@test_throws MethodError @test_reference "references/fail.txt" rand(2,2)
-    @test_throws ErrorException @test_reference "references/camera_new.txt" camera size=(5,10)
+
     @test_reference "references/camera.txt" camera size=(5,10)
     @test_reference "references/lena.txt" lena
 end
@@ -111,7 +110,6 @@ end
 @testset "images as PNG" begin
     @test_reference "references/camera.png" imresize(camera, (64,64))
     @test_reference "references/camera.png" imresize(camera, (64,64)) by=psnr_equality(25)
-    @test_throws Exception @test_reference "references/wrongfilename.png" imresize(camera, (64,64))
     @test_throws ErrorException @test_reference "references/camera.png" imresize(lena, (64,64))
     @test_throws Exception @test_reference "references/camera.png" camera # unequal size
 end
@@ -119,8 +117,31 @@ end
 using DataFrames, CSVFiles
 @testset "DataFrame as CSV" begin
     @test_reference "references/dataframe.csv" DataFrame(v1=[1,2,3], v2=["a","b","c"])
-    @test_throws ErrorException @test_reference "references/wrongfilename.csv" DataFrame(v1=[1,2,3], v2=["a","b","c"])
     @test_throws ErrorException @test_reference "references/dataframe.csv" DataFrame(v1=[1,2,3], v2=["c","b","c"])
-end
 
 end
+
+@testset "Create new $ext" for (ext, val) in (
+    (".csv", DataFrame(v1=[1,2,3], v2=["c","b","c"])),
+    (".png", imresize(camera, (64,64))),
+    (".txt", "Lorem ipsum dolor sit amet, labore et dolore magna aliqua."),
+)
+    newfilename = "references/newfilename.$ext"
+    @assert !isfile(newfilename)
+    @test_reference newfilename val  # this should create it
+    @test isfile(newfilename)  # Was created
+    @test_reference newfilename val  # Matches expected content
+    rm(newfilename, force=true)
+end
+
+@testset "Create new image as txt" begin
+    # This is a sperate testset as need to use the `size` argument to ``@test_reference`
+    newfilename = "references/new_camera.txt"
+    @assert !isfile(newfilename)
+    @test_reference newfilename camera size=(5,10)  # this should create it
+    @test isfile(newfilename)  # Was created
+    @test_reference newfilename camera size=(5,10) # Matches expected content
+    rm(newfilename, force=true)
+end
+
+end  # top level testset

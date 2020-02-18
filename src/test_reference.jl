@@ -114,18 +114,10 @@ function test_reference(
         # TODO: move encoding out from render
         render(rendermode, raw_actual)
 
-        if !isinteractive()
-            error("You need to run the tests interactively with 'include(\"test/runtests.jl\")' to create new reference images")
-        end
-
-        if !input_bool("Create reference file with above content (path: $path)?")
-            @test false
-        else
-            mkpath(dir)
-            savefile(file, actual)
-            @info("Please run the tests again for any changes to take effect")
-        end
-
+        mkpath(dir)
+        savefile(file, actual)
+        
+        @info("Please run the tests again for any changes to take effect")
         return nothing # skip current test case
     end
 
