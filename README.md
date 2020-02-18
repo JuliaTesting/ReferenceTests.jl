@@ -10,8 +10,7 @@ to be used alongside `Base.Test`._
 
 | **Package Status** | **Package Evaluator** | **Build Status**  |
 |:------------------:|:---------------------:|:-----------------:|
-| [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](LICENSE.md) [![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://evizero.github.io/ReferenceTests.jl/latest) | [![Pkg Eval 0.6](http://pkg.julialang.org/badges/ReferenceTests_0.6.svg)](http://pkg.julialang.org/?pkg=ReferenceTests) [![Pkg Eval 0.7](http://pkg.julialang.org/badges/ReferenceTests_0.7.svg)](http://pkg.julialang.org/?pkg=ReferenceTests) | [![Travis](https://travis-ci.org/Evizero/ReferenceTests.jl.svg?branch=master)](https://travis-ci.org/Evizero/ReferenceTests.jl) [![AppVeyor](https://ci.appveyor.com/api/projects/status/fle0090403pdgnxi?svg=true)](https://ci.appveyor.com/project/Evizero/referencetests-jl) [![Coverage Status](https://coveralls.io/repos/Evizero/ReferenceTests.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/Evizero/ReferenceTests.jl?branch=master) |
-
+| [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](LICENSE.md) [![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://evizero.github.io/ReferenceTests.jl/latest) | [![Pkg Eval](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/R/ReferenceTests.svg)](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/report.html) | [![Travis](https://travis-ci.org/Evizero/ReferenceTests.jl.svg?branch=master)](https://travis-ci.org/Evizero/ReferenceTests.jl) [![AppVeyor](https://ci.appveyor.com/api/projects/status/fle0090403pdgnxi?svg=true)](https://ci.appveyor.com/project/Evizero/referencetests-jl) [![Coverage Status](https://coveralls.io/repos/Evizero/ReferenceTests.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/Evizero/ReferenceTests.jl?branch=master) |
 
 ## Introduction
 
