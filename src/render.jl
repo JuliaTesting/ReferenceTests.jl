@@ -24,7 +24,7 @@ end
 
 ## 2 arg form render for comparing
 function render(mode::BeforeAfter, reference, actual)
-    if showable(MIME("image/png"), actual)
+    if displayable(MIME("image/png"))
         render(MIME("image/png"), mode, reference, actual)
     else
         render(MIME("text/plain"), mode, reference, actual)
@@ -39,10 +39,8 @@ function render(::MIME"text/plain", mode::BeforeAfter, reference, actual)
     println("-------------------------------")
 end
 function render(::MIME"image/png", mode::BeforeAfterImage, reference, actual)
-    fill_value = zero(eltype(reference))
-    out = paddedviews(fill_value, reference, actual)
     println("- REFERENCE --------|--------- ACTUAL -")
-    display(hcat(out...))
+    display(MIME("image/png"), mosaicview(reference, actual; nrow=1, npad=5))
 end
 
 function render(::Diff, reference, actual)
@@ -53,8 +51,8 @@ end
 
 ## 1 arg form render for new content
 function render(mode::RenderMode, actual)
-    if showable(MIME("image/png"), actual)
-        display(actual)
+    if displayable(MIME("image/png"))
+        display(MIME("image/png"), actual)
     else
         println("- NEW CONTENT -----------------")
         render_item(mode, actual)
