@@ -18,7 +18,7 @@ julia> @io2str print(::IO, "Hello World")
 "Hello World"
 
 julia> @io2str show(IOContext(::IO, :limit=>true, :displaysize=>(10,10)), "text/plain", ones(10))
-"10-element Array{Float64,1}:\\n 1.0\\n 1.0\\n 1.0\\n ⋮  \\n 1.0\\n 1.0"
+"10-element Array{Float64,1}:\n 1.0\n 1.0\n 1.0\n ⋮\n 1.0\n 1.0"
 ```
 """
 macro io2str(expr)

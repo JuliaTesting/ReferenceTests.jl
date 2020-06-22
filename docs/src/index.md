@@ -26,4 +26,5 @@ Pages = ["index.md"]
 @withcolor
 @io2str
 @test_reference
+psnr_equality
 ```
