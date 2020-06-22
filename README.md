@@ -10,7 +10,7 @@ to be used alongside `Base.Test`._
 
 | **Package Status** | **Package Evaluator** | **Build Status**  |
 |:------------------:|:---------------------:|:-----------------:|
-| [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](LICENSE.md) [![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://evizero.github.io/ReferenceTests.jl/latest) | [![Pkg Eval](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/R/ReferenceTests.svg)](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/report.html) | [![Travis](https://travis-ci.org/Evizero/ReferenceTests.jl.svg?branch=master)](https://travis-ci.org/Evizero/ReferenceTests.jl) [![AppVeyor](https://ci.appveyor.com/api/projects/status/fle0090403pdgnxi?svg=true)](https://ci.appveyor.com/project/Evizero/referencetests-jl) [![Coverage Status](https://coveralls.io/repos/Evizero/ReferenceTests.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/Evizero/ReferenceTests.jl?branch=master) |
+| [![License][license-img]][license-url] [![Docs-stable][docs-stable-img]][docs-stable-url] | [![pkgeval][pkgeval-img]][pkgeval-url] | [![unit test][action-img]][action-url] [![codecov][codecov-img]][codecov-url] [![coverall][coverall-img]][coverall-url] |
 
 ## Introduction
 
@@ -98,3 +98,16 @@ on `@test_reference` within Julia's REPL:
 ## License
 
 This code is free to use under the terms of the MIT license.
+
+[license-img]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat
+[license-url]: LICENSE.md
+[pkgeval-img]: https://juliaci.github.io/NanosoldierReports/pkgeval_badges/R/ReferenceTests.svg
+[pkgeval-url]: https://juliaci.github.io/NanosoldierReports/pkgeval_badges/report.html
+[action-img]: https://github.com/JuliaTesting/ReferenceTests.jl/workflows/Unit%20test/badge.svg
+[action-url]: https://github.com/JuliaTesting/ReferenceTests.jl/actions
+[codecov-img]: https://codecov.io/github/JuliaTesting/ReferenceTests.jl/coverage.svg?branch=master
+[codecov-url]: https://codecov.io/github/JuliaTesting/ReferenceTests.jl?branch=master
+[coverall-img]: https://coveralls.io/repos/github/JuliaTesting/ReferenceTests.jl/badge.svg
+[coverall-url]: https://coveralls.io/github/JuliaTesting/ReferenceTests.jl
+[docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
+[docs-stable-url]: https://JuliaTesting.github.io/ReferenceTests.jl/stable

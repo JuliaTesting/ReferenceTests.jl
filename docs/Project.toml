@@ -1,0 +1,6 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+ReferenceTests = "324d217c-45ce-50fc-942e-d289b448e8cf"
+
+[compat]
+Documenter = "0.24"
