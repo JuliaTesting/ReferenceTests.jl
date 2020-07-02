@@ -5,7 +5,9 @@ julia: 1.0
 os: linux
 notifications:
     email: false
-
+cache:
+  directories:
+    - $HOME/.julia/artifacts
 env:
   - DOCUMENTER_DEBUG=true
 jobs:
