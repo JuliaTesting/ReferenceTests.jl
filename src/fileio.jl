@@ -21,7 +21,7 @@ function savefile(file::File, content)
 end
 
 function savefile(file::TextFile, content)
-    write(file.filename, content)
+    write(file.filename, string(content))
 end
 
 function query_extended(filename)
