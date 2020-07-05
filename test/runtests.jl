@@ -15,6 +15,8 @@ refambs = detect_ambiguities(ImageInTerminal, Base, Core)
 using ReferenceTests
 ambs = detect_ambiguities(ReferenceTests, ImageInTerminal, Base, Core)
 
+strip_summary(content::String) = join(split(content, "\n")[2:end], "\n")
+
 @testset "ReferenceTests" begin
 
 @test Set(setdiff(ambs, refambs)) == Set{Tuple{Method,Method}}()
@@ -53,8 +55,12 @@ end
     @test_reference "references/string2.txt" @io2str show(IOContext(::IO, :limit=>true, :displaysize=>(5,5)), A)
     @test_reference "references/string3.txt" 1337
     @test_reference "references/string3.txt" 1338 by=(ref, x)->isapprox(ref, x; atol=10)
-    @test_reference "references/string4.txt" @io2str show(::IO, MIME"text/plain"(), Int64.(collect(1:5)))
+    @test_reference "references/string4.txt" strip_summary(@io2str show(::IO, MIME"text/plain"(), Int64.(collect(1:5))))
 
+    # ignore CRLF/LF differences
+    @test_reference "references/string5.txt" """
+        This is a\r
+        multiline string that does not end with a new line."""
     @test_reference "references/string5.txt" """
         This is a
         multiline string that does not end with a new line."""

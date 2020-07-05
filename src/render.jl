@@ -62,4 +62,4 @@ default_rendermode(::Type{DataFormat{:TXT}}, ::AbstractArray{<:Colorant}) = Befo
 # SHA256
 default_rendermode(::Type{DataFormat{:SHA256}}, ::Any) = BeforeAfterFull()
 default_rendermode(::Type{DataFormat{:SHA256}}, ::AbstractString) = BeforeAfterFull()
-default_rendermode(::Type{DataFormat{:SHA256}}, ::AbstractArray{<:Colorant}) = BeforeAfterFull()
+default_rendermode(::Type{DataFormat{:SHA256}}, ::AbstractArray{<:Colorant}) = BeforeAfterLimited()

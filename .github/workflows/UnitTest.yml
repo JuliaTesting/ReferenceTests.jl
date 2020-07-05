@@ -37,8 +37,14 @@ jobs:
             ${{ runner.os }}-test-
             ${{ runner.os }}-
 
+      # rerun the test twice to (1) make sure regeneration works (2) generated references match what's uploaded
       - name: "Unit Test"
-        uses: julia-actions/julia-runtest@master
+        shell: bash
+        run: |
+          julia --color=yes --check-bounds=yes --project -e "using Pkg; Pkg.test(coverage=true)"
+          rm -rf test/references
+          julia --color=yes --check-bounds=yes --project -e "using Pkg; Pkg.test(coverage=true)"
+          julia --color=yes --check-bounds=yes --project -e "using Pkg; Pkg.test(coverage=true)"
 
       # Unless tokenless upload is enabled, we can only submit coverage via
       # environment variable. But PRs from other fork can't do that.
