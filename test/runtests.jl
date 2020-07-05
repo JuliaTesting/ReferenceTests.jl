@@ -57,6 +57,10 @@ end
     @test_reference "references/string3.txt" 1338 by=(ref, x)->isapprox(ref, x; atol=10)
     @test_reference "references/string4.txt" strip_summary(@io2str show(::IO, MIME"text/plain"(), Int64.(collect(1:5))))
 
+    # ignore CRLF/LF differences
+    @test_reference "references/string5.txt" """
+        This is a\r
+        multiline string that does not end with a new line."""
     @test_reference "references/string5.txt" """
         This is a
         multiline string that does not end with a new line."""

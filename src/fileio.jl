@@ -9,7 +9,7 @@ function loadfile(T, file::File)
 end
 
 function loadfile(T, file::TextFile)
-    replace(read(file.filename, String), "\r"=>"")
+    replace(read(file.filename, String), "\r"=>"") # ignore CRLF/LF difference
 end
 
 function loadfile(::Type{<:Number}, file::File{format"TXT"})
@@ -46,7 +46,7 @@ Convert `x` to a validate content for file data format `T`.
 _convert(::Type{<:DataFormat}, x; kw...) = x
 
 # plain TXT
-_convert(::Type{DataFormat{:TXT}}, x; kw...) = string(x)
+_convert(::Type{DataFormat{:TXT}}, x; kw...) = replace(string(x), "\r"=>"") # ignore CRLF/LF difference
 _convert(::Type{DataFormat{:TXT}}, x::Number; kw...) = x
 function _convert(::Type{DataFormat{:TXT}}, x::AbstractArray{<:AbstractString}; kw...)
     return join(x, '\n')
