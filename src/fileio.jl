@@ -52,13 +52,11 @@ If needed, encode `x` to a valid content that matches format `T`.
 If there is no known method to encode `x`, then it directly return `x` without warning.
 """
 maybe_encode(::Type{<:DataFormat}, x; kw...) = x
-maybe_encode(::Type{<:DataFormat}, x::AbstractString; kw...) = _ignore_crlf(x)
-maybe_encode(::Type{<:DataFormat}, x::AbstractArray{<:AbstractString}; kw...) = _join(x)
 
 # plain TXT
 maybe_encode(::Type{DataFormat{:TXT}}, x; kw...) = _ignore_crlf(string(x))
-maybe_encode(::Type{DataFormat{:TXT}}, x::AbstractArray{<:AbstractString}; kw...) = _join(x) # ambiguity patch
-maybe_encode(::Type{DataFormat{:TXT}}, x::AbstractString; kw...) = _ignore_crlf(x) # ambiguity patch
+maybe_encode(::Type{DataFormat{:TXT}}, x::AbstractArray{<:AbstractString}; kw...) = _join(x)
+maybe_encode(::Type{DataFormat{:TXT}}, x::AbstractString; kw...) = _ignore_crlf(x)
 maybe_encode(::Type{DataFormat{:TXT}}, x::Number; kw...) = x # TODO: Change this to string(x) ?
 
 function maybe_encode(

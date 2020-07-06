@@ -30,7 +30,7 @@ test_files = [
 include("testutils.jl")
 
 @testset "ReferenceTests" begin
-    @test_broken Set(setdiff(ambs, refambs)) == Set{Tuple{Method,Method}}()
+    @test Set(setdiff(ambs, refambs)) == Set{Tuple{Method,Method}}()
 
     for file in test_files
         filename = first(splitext(file))

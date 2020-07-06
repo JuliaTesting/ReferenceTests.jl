@@ -40,19 +40,18 @@ end
         str4_arr = ["Hello\n\r world1", "Hello\n world2"]
 
         # string as plain text
-        for fmt in (format"TXT", format"UNKNOWN")
-            # convert should respect whitespaces
-            @test str1 == ReferenceTests.maybe_encode(fmt, str1)
-            @test str2 == ReferenceTests.maybe_encode(fmt, str2)
-            # but ignore CRLF/LF differences
-            @test str2 == ReferenceTests.maybe_encode(fmt, str2_crlf)
-            # string arrays are treated as multi-line strings, even for UNKNOWN format
-            @test str3 == ReferenceTests.maybe_encode(fmt, str3)
-            @test str3 == ReferenceTests.maybe_encode(fmt, str3_arr1)
-            @test str3 == ReferenceTests.maybe_encode(fmt, str3_arr2)
-            # string arrays should ignore CRLF/LF differences, too
-            @test str4 == ReferenceTests.maybe_encode(fmt, str4_arr)
-        end
+        fmt = format"TXT"
+        # convert should respect whitespaces
+        @test str1 == ReferenceTests.maybe_encode(fmt, str1)
+        @test str2 == ReferenceTests.maybe_encode(fmt, str2)
+        # but ignore CRLF/LF differences
+        @test str2 == ReferenceTests.maybe_encode(fmt, str2_crlf)
+        # string arrays are treated as multi-line strings, even for UNKNOWN format
+        @test str3 == ReferenceTests.maybe_encode(fmt, str3)
+        @test str3 == ReferenceTests.maybe_encode(fmt, str3_arr1)
+        @test str3 == ReferenceTests.maybe_encode(fmt, str3_arr2)
+        # string arrays should ignore CRLF/LF differences, too
+        @test str4 == ReferenceTests.maybe_encode(fmt, str4_arr)
 
         # string as SHA256 should also ignore CRLF/LF differences
         fmt = format"SHA256"
@@ -66,6 +65,12 @@ end
         @test str3_sha256 == ReferenceTests.maybe_encode(fmt, str3_arr2)
         # string arrays should ignore CRLF/LF differences, too
         @test str4_sha256 == ReferenceTests.maybe_encode(fmt, str4_arr)
+
+        # unknown formats
+        fmt = format"PNG"
+        for str in (str1, str2, str2_crlf, str3, str3_arr1, str3_arr2)
+            @test str === ReferenceTests.maybe_encode(fmt, str)
+        end
     end
 
     @testset "numbers" begin
