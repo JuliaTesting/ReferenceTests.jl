@@ -107,7 +107,7 @@ function test_reference(
         rendermode = default_rendermode(F, raw_actual)
     end
 
-    actual = _convert(F, raw_actual; kw...)
+    actual = maybe_encode(F, raw_actual; kw...)
     # preprocessing when reference file doesn't exists
     if !isfile(path)
         @info("Reference file for \"$filename\" does not exist. It will be created")

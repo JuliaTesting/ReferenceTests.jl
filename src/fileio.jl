@@ -9,7 +9,7 @@ function loadfile(T, file::File)
 end
 
 function loadfile(T, file::TextFile)
-    replace(read(file.filename, String), "\r"=>"") # ignore CRLF/LF difference
+    _ignore_CR(read(file.filename, String))
 end
 
 function loadfile(::Type{<:Number}, file::File{format"TXT"})
@@ -24,7 +24,7 @@ function savefile(file::TextFile, content)
     write(file.filename, string(content))
 end
 
-function query_extended(filename)
+function query_extended(filename::AbstractString)
     file, ext = splitext(filename)
     # TODO: make this less hacky
     if uppercase(ext) == ".SHA256"
@@ -38,20 +38,28 @@ function query_extended(filename)
     res
 end
 
+# Some target formats are not supported by FileIO and thus require an encoding/compression process
+# before saving. For other formats, we should trust IO backends and make as few changes as possible.
+# Otherwise, reference becomes unfaithful. The encoding process helps making the actual data matches
+# the reference data, which is loaded from reference file via IO backends.
+#
+# TODO: split `maybe_encode` to `maybe_preprocess` and `maybe_encode`
 """
-    _convert(T::Type{<:DataFormat}, x; kw...) -> out
+    maybe_encode(T::Type{<:DataFormat}, x; kw...) -> out
 
-Convert `x` to a validate content for file data format `T`.
+If needed, encode `x` to a valid content that matches format `T`.
+
+If there is no known method to encode `x`, then it directly return `x` without warning.
 """
-_convert(::Type{<:DataFormat}, x; kw...) = x
+maybe_encode(::Type{<:DataFormat}, x; kw...) = x
 
 # plain TXT
-_convert(::Type{DataFormat{:TXT}}, x; kw...) = replace(string(x), "\r"=>"") # ignore CRLF/LF difference
-_convert(::Type{DataFormat{:TXT}}, x::Number; kw...) = x
-function _convert(::Type{DataFormat{:TXT}}, x::AbstractArray{<:AbstractString}; kw...)
-    return join(x, '\n')
-end
-function _convert(
+maybe_encode(::Type{DataFormat{:TXT}}, x; kw...) = _ignore_CR(string(x))
+maybe_encode(::Type{DataFormat{:TXT}}, x::AbstractArray{<:AbstractString}; kw...) = _join(x)
+maybe_encode(::Type{DataFormat{:TXT}}, x::AbstractString; kw...) = _ignore_CR(x)
+maybe_encode(::Type{DataFormat{:TXT}}, x::Number; kw...) = x # TODO: Change this to string(x) ?
+
+function maybe_encode(
     ::Type{DataFormat{:TXT}}, img::AbstractArray{<:Colorant};
     size = (20,40), kw...)
 
@@ -65,11 +73,25 @@ function _convert(
 end
 
 # SHA256
-_convert(::Type{DataFormat{:SHA256}}, x; kw...) = bytes2hex(sha256(string(x)))
-function _convert(::Type{DataFormat{:SHA256}}, img::AbstractArray{<:Colorant}; kw...)
+maybe_encode(::Type{DataFormat{:SHA256}}, x; kw...) = _sha256(string(x))
+maybe_encode(::Type{DataFormat{:SHA256}}, x::AbstractString) = _sha256(_ignore_CR(x))
+maybe_encode(::Type{DataFormat{:SHA256}}, x::AbstractArray{<:AbstractString}) = _sha256(_join(x))
+function maybe_encode(::Type{DataFormat{:SHA256}}, img::AbstractArray{<:Colorant}; kw...)
     # encode image into SHA256
-    size_str = bytes2hex(sha256(reinterpret(UInt8,[map(Int64,size(img))...])))
-    img_str = bytes2hex(sha256(reinterpret(UInt8,vec(rawview(channelview(img))))))
+    size_str = _sha256(reinterpret(UInt8,[map(Int64,size(img))...]))
+    img_str = _sha256(reinterpret(UInt8,vec(rawview(channelview(img)))))
 
     return size_str * img_str
 end
+
+# Helpers
+_join(x::AbstractArray{<:AbstractString}) = _ignore_CR(join(x, "\n"))
+_sha256(x) = bytes2hex(sha256(x))
+"""
+    _ignore_CR(x::AbstractString)
+
+Ignore the CRLF(`\\r\\n`) and LF(`\\n`) difference by removing `\\r` from the given string.
+
+CRLF format is widely used by Windows while LF format is mainly used by Linux.
+"""
+_ignore_CR(x::AbstractString) = replace(x, "\r\n"=>"\n") # issue #39
