@@ -30,14 +30,14 @@ end
         str1_sha256 = "64ec88ca00b268e5ba1a35678a1b5316d212f4f366b2477232534a8aeca37f3c"
         str2 = "Hello\n world"
         str2_sha256 = "60b65ab310480818c4289227f2ec68f1714743db8571b4cb190e100c0085be3d" # bytes2hex(SHA.sha256(str2))
-        str2_crlf = "Hello\n\r world"
+        str2_crlf = "Hello\r\n world"
         str3 = "Hello\nworld"
         str3_sha256 = "46e0ea795802f17d0b340983ca7d7068c94d7d9172ee4daea37a1ab1168649ec" # bytes2hex(SHA.sha256(str3))
         str3_arr1 = ["Hello", "world"]
         str3_arr2 = ["Hello" "world"]
         str4 = "Hello\n world1\nHello\n world2"
         str4_sha256 = "c7dc8b82c3a6fed4afa0c8790a0586b73df0e4f35524efe6810e5d78b6b6a611" # bytes2hex(SHA.sha256(str4))
-        str4_arr = ["Hello\n\r world1", "Hello\n world2"]
+        str4_arr = ["Hello\r\n world1", "Hello\n world2"]
 
         # string as plain text
         fmt = format"TXT"

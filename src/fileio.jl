@@ -9,7 +9,7 @@ function loadfile(T, file::File)
 end
 
 function loadfile(T, file::TextFile)
-    _ignore_crlf(read(file.filename, String))
+    _ignore_CR(read(file.filename, String))
 end
 
 function loadfile(::Type{<:Number}, file::File{format"TXT"})
@@ -41,7 +41,7 @@ end
 # Some target formats are not supported by FileIO and thus require an encoding/compression process
 # before saving. For other formats, we should trust IO backends and make as few changes as possible.
 # Otherwise, reference becomes unfaithful. The encoding process helps making the actual data matches
-# the reference data, which is load from reference file via IO backends.
+# the reference data, which is loaded from reference file via IO backends.
 #
 # TODO: split `maybe_encode` to `maybe_preprocess` and `maybe_encode`
 """
@@ -54,9 +54,9 @@ If there is no known method to encode `x`, then it directly return `x` without w
 maybe_encode(::Type{<:DataFormat}, x; kw...) = x
 
 # plain TXT
-maybe_encode(::Type{DataFormat{:TXT}}, x; kw...) = _ignore_crlf(string(x))
+maybe_encode(::Type{DataFormat{:TXT}}, x; kw...) = _ignore_CR(string(x))
 maybe_encode(::Type{DataFormat{:TXT}}, x::AbstractArray{<:AbstractString}; kw...) = _join(x)
-maybe_encode(::Type{DataFormat{:TXT}}, x::AbstractString; kw...) = _ignore_crlf(x)
+maybe_encode(::Type{DataFormat{:TXT}}, x::AbstractString; kw...) = _ignore_CR(x)
 maybe_encode(::Type{DataFormat{:TXT}}, x::Number; kw...) = x # TODO: Change this to string(x) ?
 
 function maybe_encode(
@@ -74,7 +74,7 @@ end
 
 # SHA256
 maybe_encode(::Type{DataFormat{:SHA256}}, x; kw...) = _sha256(string(x))
-maybe_encode(::Type{DataFormat{:SHA256}}, x::AbstractString) = _sha256(_ignore_crlf(x))
+maybe_encode(::Type{DataFormat{:SHA256}}, x::AbstractString) = _sha256(_ignore_CR(x))
 maybe_encode(::Type{DataFormat{:SHA256}}, x::AbstractArray{<:AbstractString}) = _sha256(_join(x))
 function maybe_encode(::Type{DataFormat{:SHA256}}, img::AbstractArray{<:Colorant}; kw...)
     # encode image into SHA256
@@ -84,8 +84,14 @@ function maybe_encode(::Type{DataFormat{:SHA256}}, img::AbstractArray{<:Colorant
     return size_str * img_str
 end
 
-
 # Helpers
-_join(x::AbstractArray{<:AbstractString}) = mapreduce(_ignore_crlf, (x,y)->x*"\n"*y, x)
+_join(x::AbstractArray{<:AbstractString}) = _ignore_CR(join(x, "\n"))
 _sha256(x) = bytes2hex(sha256(x))
-_ignore_crlf(x::AbstractString) = replace(x, "\r"=>"")
+"""
+    _ignore_CR(x::AbstractString)
+
+Ignore the CRLF(`\\r\\n`) and LF(`\\n`) difference by removing `\\r` from the given string.
+
+CRLF format is widely used by Windows while LF format is mainly used by Linux.
+"""
+_ignore_CR(x::AbstractString) = replace(x, "\r\n"=>"\n") # issue #39
