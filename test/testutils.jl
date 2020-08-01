@@ -17,5 +17,10 @@ function string_check(ref, actual)
         actual = replace(actual, p)
         ref = replace(ref, p)
     end
+
+    # Julia v1.4
+    ref = join(map(strip, split(ref, "\n")), "\n")
+    actual = join(map(strip, split(actual, "\n")), "\n")
+
     isequal(ref, actual)
 end
