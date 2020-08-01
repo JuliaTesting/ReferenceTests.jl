@@ -80,8 +80,8 @@ end
         mode = BeforeAfterFull()
         for (x, xname) in items
             # @info "Types" x=typeof(x) mode=mode
-            @test_reference joinpath(refdir, "BeforeAfterFull", "$(xname)_new.txt") @io2str render(::IO, mode, x[2])
-            @test_reference joinpath(refdir, "BeforeAfterFull", "$(xname)_compare.txt") @io2str render(::IO, mode, x...)
+            @test_reference joinpath(refdir, "BeforeAfterFull", "$(xname)_new.txt") @io2str(render(::IO, mode, x[2])) by=string_check
+            @test_reference joinpath(refdir, "BeforeAfterFull", "$(xname)_compare.txt") @io2str(render(::IO, mode, x...)) by=string_check
         end
     end
 
@@ -89,8 +89,8 @@ end
         mode = BeforeAfterLimited()
         for (x, xname) in items
             # @info "Types" x=typeof(x) mode=mode
-            @test_reference joinpath(refdir, "BeforeAfterLimited", "$(xname)_new.txt") @io2str render(::IO, mode, x[2])
-            @test_reference joinpath(refdir, "BeforeAfterLimited", "$(xname)_compare.txt") @io2str render(::IO, mode, x...)
+            @test_reference joinpath(refdir, "BeforeAfterLimited", "$(xname)_new.txt") @io2str(render(::IO, mode, x[2])) by=string_check
+            @test_reference joinpath(refdir, "BeforeAfterLimited", "$(xname)_compare.txt") @io2str(render(::IO, mode, x...)) by=string_check
         end
     end
 
@@ -102,8 +102,8 @@ end
                            (str3, "str3"),
                         )
             # @info "Types" x=typeof(x) mode=mode
-            @test_reference joinpath(refdir, "Diff", "$(xname)_new.txt") @io2str render(::IO, mode, x[2])
-            @test_reference joinpath(refdir, "Diff", "$(xname)_compare.txt") @io2str render(::IO, mode, x...)
+            @test_reference joinpath(refdir, "Diff", "$(xname)_new.txt") @io2str(render(::IO, mode, x[2])) by=string_check
+            @test_reference joinpath(refdir, "Diff", "$(xname)_compare.txt") @io2str(render(::IO, mode, x...)) by=string_check
         end
     end
 
@@ -117,8 +117,8 @@ end
                         #    (img3d_1, "img3d_1")
                         )
             # @info "Types" x=typeof(x) mode=mode
-            @test_reference joinpath(refdir, "BeforeAfterImage", "$(xname)_new.txt") @io2str render(::IO, mode, x[2])
-            @test_reference joinpath(refdir, "BeforeAfterImage", "$(xname)_compare.txt") @io2str render(::IO, mode, x...)
+            @test_reference joinpath(refdir, "BeforeAfterImage", "$(xname)_new.txt") @io2str(render(::IO, mode, x[2])) by=string_check
+            @test_reference joinpath(refdir, "BeforeAfterImage", "$(xname)_compare.txt") @io2str(render(::IO, mode, x...)) by=string_check
         end
     end
 
