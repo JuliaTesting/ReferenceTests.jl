@@ -1,5 +1,5 @@
 - NEW CONTENT -----------------
-7-element Array{Int64,1}:
+7-element Vector{Int64}:
   1
   4
   7
