@@ -1,0 +1,6 @@
+- REFERENCE -------------------
+Gray{Normed{UInt8,8}}[Gray{N0f8}(0.0), Gray{N0f8}(0.102), Gray{N0f8}(0.2), Gray{N0f8}(0.298), Gray{N0f8}(0.4), Gray{N0f8}(0.502), Gray{N0f8}(0.6), Gray{N0f8}(0.698), Gray{N0f8}(0.8), Gray{N0f8}(0.902)]
+-------------------------------
+- ACTUAL ----------------------
+Gray{Normed{UInt8,8}}[Gray{N0f8}(0.0), Gray{N0f8}(0.051), Gray{N0f8}(0.102), Gray{N0f8}(0.149), Gray{N0f8}(0.2), Gray{N0f8}(0.251), Gray{N0f8}(0.298), Gray{N0f8}(0.349), Gray{N0f8}(0.4), Gray{N0f8}(0.451), Gray{N0f8}(0.502), Gray{N0f8}(0.549), Gray{N0f8}(0.6), Gray{N0f8}(0.651), Gray{N0f8}(0.698), Gray{N0f8}(0.749), Gray{N0f8}(0.8), Gray{N0f8}(0.851), Gray{N0f8}(0.902), Gray{N0f8}(0.949)]
+-------------------------------

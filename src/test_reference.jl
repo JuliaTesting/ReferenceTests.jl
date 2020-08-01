@@ -103,9 +103,7 @@ function test_reference(
     # infer the default rendermode here
     # since `nothing` is always passed to this method from
     # test_reference(filename::AbstractString, raw_actual; kw...)
-    if rendermode === nothing
-        rendermode = default_rendermode(F, raw_actual)
-    end
+    rendermode === nothing && (rendermode = default_rendermode(T))
 
     actual = maybe_encode(F, raw_actual; kw...)
     # preprocessing when reference file doesn't exists
