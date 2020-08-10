@@ -85,7 +85,7 @@ change for selected test cases.
 
 ## Documentation
 
-Check out the **[latest documentation](https://evizero.github.io/ReferenceTests.jl/latest)**
+Check out the **[latest documentation][docs-latest-url]**
 
 Additionally, you can make use of Julia's native docsystem.
 The following example shows how to get additional information
@@ -111,3 +111,5 @@ This code is free to use under the terms of the MIT license.
 [coverall-url]: https://coveralls.io/github/JuliaTesting/ReferenceTests.jl
 [docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
 [docs-stable-url]: https://JuliaTesting.github.io/ReferenceTests.jl/stable
+[docs-latest-img]: https://img.shields.io/badge/docs-latest-blue.svg
+[docs-latest-url]: https://JuliaTesting.github.io/ReferenceTests.jl/latest
