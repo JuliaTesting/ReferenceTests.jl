@@ -15,7 +15,7 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
 DeepDiffs = "1.1"
-Distances = "0.7, 0.8, 0.9"
+Distances = "0.7, 0.8, 0.9, 0.10"
 FileIO = "1"
 ImageCore = "0.8.1"
 ImageInTerminal = "0.3, 0.4"
