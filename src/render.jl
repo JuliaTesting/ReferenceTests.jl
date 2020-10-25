@@ -24,6 +24,13 @@ end
 
 ## 2 arg form render for comparing
 function render(mode::BeforeAfter, reference, actual)
+    if displayable(MIME("image/png"))
+        render(MIME("image/png"), mode, reference, actual)
+    else
+        render(MIME("text/plain"), mode, reference, actual)
+    end
+end
+function render(::MIME"text/plain", mode::BeforeAfter, reference, actual)
     println("- REFERENCE -------------------")
     render_item(mode, reference)
     println("-------------------------------")
@@ -31,6 +38,11 @@ function render(mode::BeforeAfter, reference, actual)
     render_item(mode, actual)
     println("-------------------------------")
 end
+function render(::MIME"image/png", mode::BeforeAfterImage, reference, actual)
+    println("- REFERENCE --------|--------- ACTUAL -")
+    display(MIME("image/png"), mosaicview(reference, actual; nrow=1, npad=5))
+end
+
 function render(::Diff, reference, actual)
     println("- DIFF ------------------------")
     @withcolor println(deepdiff(reference, actual))
@@ -39,10 +51,15 @@ end
 
 ## 1 arg form render for new content
 function render(mode::RenderMode, actual)
-    println("- NEW CONTENT -----------------")
-    render_item(mode, actual)
-    println("-------------------------------")
+    if displayable(MIME("image/png"))
+        display(MIME("image/png"), actual)
+    else
+        println("- NEW CONTENT -----------------")
+        render_item(mode, actual)
+        println("-------------------------------")
+    end
 end
+
 
 """
     default_rendermode(::DataFormat, actual)

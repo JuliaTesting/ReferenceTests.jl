@@ -8,6 +8,8 @@ using ImageInTerminal
 using SHA
 using DeepDiffs
 using Random
+using MosaicViews
+using ImageShow
 
 export
     @withcolor,
