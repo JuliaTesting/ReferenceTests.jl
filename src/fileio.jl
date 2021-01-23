@@ -4,11 +4,11 @@
 
 const TextFile = Union{File{format"TXT"}, File{format"SHA256"}}
 
-function loadfile(T, file::File)
-    T(load(file)) # Fallback to FileIO
+function loadfile(::Type{T}, file::File) where T
+    T(load(file))::T # Fallback to FileIO
 end
 
-function loadfile(T, file::TextFile)
+function loadfile(::Type{T}, file::TextFile) where T  # specialize on T only to prevent ambiguity
     replace(read(file.filename, String), "\r"=>"") # ignore CRLF/LF difference
 end
 
