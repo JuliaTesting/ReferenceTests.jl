@@ -1,7 +1,7 @@
 name = "ReferenceTests"
 uuid = "324d217c-45ce-50fc-942e-d289b448e8cf"
 authors = ["Christof Stocker <stocker.christof@gmail.com>", "Lyndon White <oxinabox@ucc.asn.au>", "Johnny Chen <johnnychen94@hotmail.com>"]
-version = "0.9.2"
+version = "0.9.3"
 
 [deps]
 DeepDiffs = "ab62b9b5-e342-54a8-a765-a90f495de1a6"
@@ -14,11 +14,16 @@ SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
+CSVFiles = "1"
+DataFrames = "0.21, 0.22"
 DeepDiffs = "1.1"
 Distances = "0.7, 0.8, 0.9, 0.10"
 FileIO = "1"
 ImageCore = "0.8.1"
 ImageInTerminal = "0.3, 0.4"
+ImageMagick = "0.7, 1"
+ImageTransformations = "0.8"
+TestImages = "0.6, 1"
 julia = "1"
 
 [extras]
