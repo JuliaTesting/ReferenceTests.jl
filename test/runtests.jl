@@ -1,6 +1,12 @@
-using Test
-using ImageInTerminal, TestImages, ImageCore, ImageTransformations
-using Random
+using Test, Random
+using TestImages
+using ImageCore
+using ImageInTerminal
+using ImageTransformations
+using Plots
+
+# workaround GR warnings
+ENV["GKSwstype"] = "100"
 
 if isinteractive()
     @info ("In interactive use, one should respond \"n\" when the program"
@@ -148,6 +154,11 @@ end
     @test isfile(newfilename)  # Was created
     @test_reference newfilename camera size=(5,10) # Matches expected content
     rm(newfilename, force=true)
+end
+
+@testset "Plots as PNG images" begin
+    @test_reference_plot "references/heatmap.png" heatmap([1 0; 0 1])
+    @test_reference_plot "references/scatter.png" scatter([(0,0),(1,0),(0,1),(1,1)],ms=8)
 end
 
 end  # top level testset

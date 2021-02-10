@@ -4,6 +4,7 @@ using Test
 using ImageCore
 using Distances
 using FileIO
+using PNGFiles
 using ImageInTerminal
 using SHA
 using DeepDiffs
@@ -13,10 +14,12 @@ export
     @withcolor,
     @io2str,
     @test_reference,
+    @test_reference_plot,
     psnr_equality
 
 include("utils.jl")
 include("test_reference.jl")
+include("test_reference_plot.jl")
 include("fileio.jl")
 include("equality_metrics.jl")
 include("render.jl")
