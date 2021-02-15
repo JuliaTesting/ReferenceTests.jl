@@ -1,5 +1,6 @@
 using Test
 using ImageInTerminal, TestImages, ImageCore, ImageTransformations
+using Plots
 using Random
 
 if isinteractive()
@@ -118,6 +119,11 @@ end
     @test_reference "references/camera.png" imresize(camera, (64,64)) by=psnr_equality(25)
     @test_throws ErrorException @test_reference "references/camera.png" imresize(lena, (64,64))
     @test_throws Exception @test_reference "references/camera.png" camera # unequal size
+end
+
+@testset "Plots as PNG images" begin
+    @test_reference "references/heatmap.png" heatmap([1 0; 0 1])
+    @test_reference "references/scatter.png" scatter([(0,0),(1,0),(0,1),(1,1)],ms=8)
 end
 
 using DataFrames, CSVFiles

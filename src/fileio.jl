@@ -64,6 +64,16 @@ function _convert(
     return join(strs,'\n')
 end
 
+# PNG
+function _convert(::Type{<:DataFormat{:PNG}}, data)::AbstractArray{<:Colorant}
+    mktempdir() do dir
+        filename = File{DataFormat{:PNG}}(joinpath(dir, "inconversion.png"))
+        savefile(filename, data)
+        load(filename)
+    end
+end
+_convert(::Type{<:DataFormat{:PNG}}, img::AbstractArray{<:Colorant}; kw...) = img
+
 # SHA256
 _convert(::Type{DataFormat{:SHA256}}, x; kw...) = bytes2hex(sha256(string(x)))
 function _convert(::Type{DataFormat{:SHA256}}, img::AbstractArray{<:Colorant}; kw...)

@@ -122,7 +122,7 @@ function test_reference(
     end
 
     # file exists
-    reference = loadfile(T, file)
+    reference = loadfile(typeof(actual), file)
 
     if equiv === nothing
         # generally, `reference` and `actual` are of the same type after preprocessing
