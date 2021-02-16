@@ -21,7 +21,6 @@ Distances = "0.7, 0.8, 0.9, 0.10"
 FileIO = "1"
 ImageCore = "0.8.1"
 ImageInTerminal = "0.3, 0.4"
-ImageMagick = "0.7, 1"
 ImageTransformations = "0.8"
 Plots = "1.4.3"
 TestImages = "0.6, 1"
@@ -30,10 +29,11 @@ julia = "1"
 [extras]
 CSVFiles = "5d742f6a-9f54-50ce-8119-2520741973ca"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+ImageIO = "82e4d734-157c-48bb-816b-45c225c6df19"
 ImageMagick = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
 ImageTransformations = "02fcd773-0e25-5acc-982a-7f6622650795"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 TestImages = "5e47fb64-e119-507b-a336-dd2b206d9990"
 
 [targets]
-test = ["CSVFiles", "DataFrames", "ImageMagick", "ImageTransformations", "Plots", "TestImages"]
+test = ["CSVFiles", "DataFrames", "ImageIO", "ImageMagick", "ImageTransformations", "Plots", "TestImages"]
