@@ -122,7 +122,7 @@ end
 end
 
 @testset "Plots as PNG images" begin
-    @test_reference "references/heatmap.png" heatmap([1 0; 0 1])
+    @test_reference "references/heatmap.png" heatmap([1 0; 0 1]) by=psnr_equality(15)
     @test_reference "references/scatter.png" scatter([(0,0),(1,0),(0,1),(1,1)],ms=8)
 end
 
