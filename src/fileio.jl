@@ -64,7 +64,7 @@ function _convert(
     return join(strs,'\n')
 end
 
-# PNG  (Including for things that can be saved as PNGs like Plots.jl plots)
+# PNG  (Including images as arrays of colorants, and things like Plots.jl plots etc)
 function _convert(::Type{<:DataFormat{:PNG}}, data)::AbstractArray{<:Colorant}
     mktempdir() do dir
         filename = File{DataFormat{:PNG}}(joinpath(dir, "inconversion.png"))
