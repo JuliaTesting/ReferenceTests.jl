@@ -172,8 +172,8 @@ look at them. You should use your operating systems standard mechanisms to clean
 temporary directories.
 """
 function mismatch_staging_dir()
-    return mkpath(get(ENV,
+    return mkpath(expanduser(get(ENV,
         "REFERENCE_TESTS_STAGING_PATH",
         VERSION >= v"1.3" ? mktempdir(; cleanup=false) : mktempdir()
-    ))
+    )))
 end

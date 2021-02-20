@@ -19,7 +19,7 @@ jobs:
         julia-version: ['nightly', '1']
         os: [ubuntu-latest, windows-latest, macOS-latest]
     env:
-        REFERENCE_TESTS_STAGING_PATH: "mismatches/"
+        REFERENCE_TESTS_STAGING_PATH: "~/mismatches/"
     steps:
       - uses: actions/checkout@v1.0.0
       - name: "Set up Julia"
@@ -51,7 +51,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: "Mismatched Files"
-          path: "mismatches/"
+          path: "~/mismatches/"
       # Unless tokenless upload is enabled, we can only submit coverage via
       # environment variable. But PRs from other fork can't do that.
       # See issue: https://github.com/julia-actions/julia-uploadcodecov/issues/1
