@@ -19,7 +19,7 @@ jobs:
         julia-version: ['nightly', '1']
         os: [ubuntu-latest, windows-latest, macOS-latest]
     env:
-        REFERENCE_TESTS_STAGING_PATH = "mismatches"
+        REFERENCE_TESTS_STAGING_PATH: "mismatches"
     steps:
       - uses: actions/checkout@v1.0.0
       - name: "Set up Julia"
