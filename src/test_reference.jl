@@ -91,14 +91,14 @@ function test_reference(
 end
 
 function test_reference(
-    file::File{F},
+    reference_file::File{F},
     raw_actual::T,
     equiv=nothing,
     rendermode=nothing;
     kw...) where {F <: DataFormat, T}
 
-    path = file.filename
-    dir, filename = splitdir(path)
+    reference_path = reference_file.filename
+    reference_dir, reference_filename = splitdir(reference_path)
 
     actual = _convert(F, raw_actual; kw...)
 
@@ -109,21 +109,23 @@ function test_reference(
         rendermode = default_rendermode(F, actual)
     end
 
-    # preprocessing when reference file doesn't exists
-    if !isfile(path)
-        @info("Reference file for \"$filename\" does not exist. It will be created")
+    if !isfile(reference_path)  # when reference file doesn't exists
+        mkpath(reference_dir)
+        savefile(reference_file, actual)
+        @info(
+            "Reference file for \"$reference_filename\" did not exist. It has been created",
+            new_reference=reference_path,
+        )
+
         # TODO: move encoding out from render
         render(rendermode, actual)
-
-        mkpath(dir)
-        savefile(file, actual)
 
         @info("Please run the tests again for any changes to take effect")
         return nothing # skip current test case
     end
 
     # file exists
-    reference = loadfile(typeof(actual), file)
+    reference = loadfile(typeof(actual), reference_file)
 
     if equiv === nothing
         # generally, `reference` and `actual` are of the same type after preprocessing
@@ -132,20 +134,46 @@ function test_reference(
 
     if equiv(reference, actual)
         @test true # to increase test counter if reached
-    else
-        # post-processing when test fails
-        println("Test for \"$filename\" failed.")
+    else  # When test fails
+        # Saving actual file so user can look at it
+        actual_path = joinpath(mismatch_staging_dir(), reference_filename)
+        actual_file = typeof(reference_file)(actual_path)
+        savefile(actual_file, actual)
+
+        # Report to user.
+        @info(
+            "Reference Test for \"$reference_filename\" failed.",
+            reference=reference_path,
+            actual=actual_path,
+        )
         render(rendermode, reference, actual)
 
         if !isinteractive()
             error("You need to run the tests interactively with 'include(\"test/runtests.jl\")' to update reference images")
         end
 
-        if !input_bool("Replace reference with actual result (path: $path)?")
+        if !input_bool("Replace reference with actual result?")
             @test false
         else
-            savefile(file, actual)
+            mv(actual_path, reference_path; force=true)  # overwrite old file it
             @info("Please run the tests again for any changes to take effect")
         end
     end
+end
+
+"""
+    mismatch_staging_dir()
+
+The directory where we store files that don't match so user can look at them.
+If the enviroment variable `REFERENCE_TESTS_STAGING` is set then we will use that directory.
+If not a temporary directory will be created. Note that this temporary directory will not be
+deleted when julia exists. Since in that case the files would may be deleted before you can
+look at them. You should use your operating systems standard mechanisms to clean up excess
+temporary directories.
+"""
+function mismatch_staging_dir()
+    return mkpath(get(ENV,
+        "REFERENCE_TESTS_STAGING",
+        VERSION >= v"1.3" ? mktempdir(; cleanup=false) : mktempdir()
+    ))
 end
