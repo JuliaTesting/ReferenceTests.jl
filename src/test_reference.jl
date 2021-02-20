@@ -100,19 +100,20 @@ function test_reference(
     path = file.filename
     dir, filename = splitdir(path)
 
+    actual = _convert(F, raw_actual; kw...)
+
     # infer the default rendermode here
     # since `nothing` is always passed to this method from
     # test_reference(filename::AbstractString, raw_actual; kw...)
     if rendermode === nothing
-        rendermode = default_rendermode(F, raw_actual)
+        rendermode = default_rendermode(F, actual)
     end
 
-    actual = _convert(F, raw_actual; kw...)
     # preprocessing when reference file doesn't exists
     if !isfile(path)
         @info("Reference file for \"$filename\" does not exist. It will be created")
         # TODO: move encoding out from render
-        render(rendermode, raw_actual)
+        render(rendermode, actual)
 
         mkpath(dir)
         savefile(file, actual)
@@ -122,7 +123,7 @@ function test_reference(
     end
 
     # file exists
-    reference = loadfile(T, file)
+    reference = loadfile(typeof(actual), file)
 
     if equiv === nothing
         # generally, `reference` and `actual` are of the same type after preprocessing

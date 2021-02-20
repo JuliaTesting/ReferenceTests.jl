@@ -1,5 +1,6 @@
 using Test
 using ImageInTerminal, TestImages, ImageCore, ImageTransformations
+using Plots
 using Random
 
 if isinteractive()
@@ -118,6 +119,14 @@ end
     @test_reference "references/camera.png" imresize(camera, (64,64)) by=psnr_equality(25)
     @test_throws ErrorException @test_reference "references/camera.png" imresize(lena, (64,64))
     @test_throws Exception @test_reference "references/camera.png" camera # unequal size
+end
+
+@testset "Plots as PNG images" begin
+    # Test disabled on linux because: https://github.com/JuliaPlots/Plots.jl/issues/2127
+    if !Sys.islinux()
+        @test_reference "references/heatmap.png" heatmap([1 0; 0 1]) by=psnr_equality(15)
+        @test_reference "references/scatter.png" scatter([(0,0),(1,0),(0,1),(1,1)], ms=8)
+    end
 end
 
 using DataFrames, CSVFiles
