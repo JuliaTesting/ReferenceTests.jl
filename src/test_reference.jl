@@ -165,7 +165,7 @@ end
     mismatch_staging_dir()
 
 The directory where we store files that don't match so user can look at them.
-If the enviroment variable `REFERENCE_TESTS_STAGING` is set then we will use that directory.
+If the enviroment variable `REFERENCE_TESTS_STAGING_PATH` is set then we will use that directory.
 If not a temporary directory will be created. Note that this temporary directory will not be
 deleted when julia exists. Since in that case the files would may be deleted before you can
 look at them. You should use your operating systems standard mechanisms to clean up excess
@@ -173,7 +173,7 @@ temporary directories.
 """
 function mismatch_staging_dir()
     return mkpath(get(ENV,
-        "REFERENCE_TESTS_STAGING",
+        "REFERENCE_TESTS_STAGING_PATH",
         VERSION >= v"1.3" ? mktempdir(; cleanup=false) : mktempdir()
     ))
 end
