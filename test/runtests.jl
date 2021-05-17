@@ -32,7 +32,7 @@ square = Gray{N0f8}[0.1 0.2 0.3; 0.4 0.5 0.6; 0.7 0.6 0.9]
 rgb_rect = rand(RGB{N0f8}, 2, 3)
 
 @testset "io2str" begin
-    @test_throws LoadError eval(@macroexpand @io2str(::IO))
+    @test_throws Exception eval(@macroexpand @io2str(::IO))
     @test_throws ArgumentError @io2str(2)
     @test_throws ArgumentError @io2str(string(2))
     @test @io2str(print(::IO, "foo")) == "foo"
