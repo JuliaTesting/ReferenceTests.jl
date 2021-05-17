@@ -14,4 +14,4 @@ makedocs(
     ]
 )
 
-deploydocs(repo = "github.com/johnnychen94/DemoCards.jl.git")
+deploydocs(repo = "github.com/JuliaTesting/ReferenceTests.jl.git")
