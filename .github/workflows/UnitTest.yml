@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        julia-version: ['nightly', '1']
+        julia-version: ['1.0', '1', 'nightly']
         os: [ubuntu-latest, windows-latest, macOS-latest]
     env:
         REFERENCE_TESTS_STAGING_PATH: "~/mismatches/"
@@ -39,6 +39,18 @@ jobs:
             ${{ runner.os }}-test-
             ${{ runner.os }}-
 
+      # Pkg version resolver isn't smart enough for old Julia versions; we manually aid it.
+      - name: "Compat fix for Julia < v1.3.0"
+        if: ${{ matrix.julia-version == '1.0' }}
+        run: |
+          using Pkg
+          Pkg.add([
+            PackageSpec(name="Reexport", version="0.2"),
+            PackageSpec(name="Plots", version="1.4.3"),
+            PackageSpec(name="DataFrames", version="0.22.7"),
+            PackageSpec(name="AbstractFFTs", version="0.5"),
+          ])
+        shell: julia --project=. --startup=no --color=yes {0}
       # rerun the test twice to (1) make sure regeneration works (2) generated references match what's uploaded
       - name: "Unit Test"
         shell: bash
