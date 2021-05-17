@@ -47,6 +47,7 @@ jobs:
           Pkg.add([
             PackageSpec(name="Reexport", version="0.2"),
             PackageSpec(name="Plots", version="1.4.3"),
+            PackageSpec(name="GR", version="0.50.1"),
             PackageSpec(name="DataFrames", version="0.22.7"),
             PackageSpec(name="AbstractFFTs", version="0.5"),
           ])
