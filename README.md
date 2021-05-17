@@ -10,7 +10,7 @@ to be used alongside `Base.Test`._
 
 | **Package Status** | **Package Evaluator** | **Build Status**  |
 |:------------------:|:---------------------:|:-----------------:|
-| [![License][license-img]][license-url] [![Docs-stable][docs-stable-img]][docs-stable-url] | [![pkgeval][pkgeval-img]][pkgeval-url] | [![unit test][action-img]][action-url] [![codecov][codecov-img]][codecov-url] [![coverall][coverall-img]][coverall-url] |
+| [![License][license-img]][license-url] [![Docs-stable][docs-stable-img]][docs-stable-url] | [![pkgeval][pkgeval-img]][pkgeval-url] | [![unit test][action-img]][action-url] [![codecov][codecov-img]][codecov-url] |
 
 ## Introduction
 
@@ -107,8 +107,6 @@ This code is free to use under the terms of the MIT license.
 [action-url]: https://github.com/JuliaTesting/ReferenceTests.jl/actions
 [codecov-img]: https://codecov.io/github/JuliaTesting/ReferenceTests.jl/coverage.svg?branch=master
 [codecov-url]: https://codecov.io/github/JuliaTesting/ReferenceTests.jl?branch=master
-[coverall-img]: https://coveralls.io/repos/github/JuliaTesting/ReferenceTests.jl/badge.svg
-[coverall-url]: https://coveralls.io/github/JuliaTesting/ReferenceTests.jl
 [docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
 [docs-stable-url]: https://JuliaTesting.github.io/ReferenceTests.jl/stable
 [docs-latest-img]: https://img.shields.io/badge/docs-latest-blue.svg
