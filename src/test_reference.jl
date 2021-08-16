@@ -88,7 +88,7 @@ function test_reference(
     filename::AbstractString, raw_actual;
     by = nothing, render = nothing, format = nothing, kw...)
     format isa AbstractString && (format = FileIO.DataFormat{Symbol(format)})
-    reference_file = isnothing(format) ? query_extended(filename) : File{format}(filename)
+    reference_file = format === nothing ? query_extended(filename) : File{format}(filename)
     test_reference(reference_file, raw_actual, by, render; kw...)
 end
 
