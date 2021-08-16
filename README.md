@@ -38,8 +38,9 @@ using ReferenceTests
 If you put the above code into your `test/runtests.jl` and
 execute the file in an interactive julia session (i.e. with
 `include`), then it will trigger an interactive dialog if the
-results don't match or the file does not yet exist. This dialog
-allows the user to create and/or update the reference files.
+results don't match. This dialog allows the user to update the
+reference files. If you do not want to be prompted, just
+delete the reference data before running the tests.
 
 ![readme1](https://user-images.githubusercontent.com/10854026/30002940-3ba480b0-90b6-11e7-93f6-148ac38bd695.png)
 
