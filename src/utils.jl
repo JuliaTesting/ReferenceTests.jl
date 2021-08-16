@@ -92,9 +92,9 @@ end
 
 function input_bool(prompt)
     while true
-        println(prompt, " [y/n]")
+        println(prompt, " [Y/n]")
         response = readline()
-        length(response) == 0 && continue
+        isempty(response) && return true
         reply = lowercase(first(strip(response)))
         if reply == 'y'
             return true
