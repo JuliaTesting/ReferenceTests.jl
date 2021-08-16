@@ -24,8 +24,7 @@ function savefile(file::TextFile, content)
     write(file.filename, string(content))
 end
 
-function query_extended(filename, force_raw_txt = false)
-    force_raw_txt && return File{format"TXT"}(filename)
+function query_extended(filename)
     file, ext = splitext(filename)
     # TODO: make this less hacky
     if uppercase(ext) == ".SHA256"
