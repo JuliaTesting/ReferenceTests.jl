@@ -1,5 +1,6 @@
 using Test
 using ImageInTerminal, TestImages, ImageCore, ImageTransformations
+using FileIO
 using Plots
 using Random
 
@@ -157,6 +158,13 @@ end
     @test isfile(newfilename)  # Was created
     @test_reference newfilename camera size=(5,10) # Matches expected content
     rm(newfilename, force=true)
+end
+
+@testset "format keyword" begin
+    file =  "references/camera.sha256"
+    raw_contents = read(file, String)
+    @test_reference file raw_contents format=format"TXT"
+    @test_reference file raw_contents format="TXT"
 end
 
 end  # top level testset

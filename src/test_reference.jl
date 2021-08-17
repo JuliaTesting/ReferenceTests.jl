@@ -16,6 +16,7 @@ Arguments:
 * `filename::String`: _relative_ path to the file that contains the macro invocation.
 * `expr`: the actual content used to compare.
 * `by`: the equality test function. By default it is `isequal` if not explicitly stated.
+* `format`: Force reading the file using a specific format
 
 # Types
 
@@ -85,9 +86,10 @@ end
 
 function test_reference(
     filename::AbstractString, raw_actual;
-    by = nothing, render = nothing, kw...)
-
-    test_reference(query_extended(filename), raw_actual, by, render; kw...)
+    by = nothing, render = nothing, format = nothing, kw...)
+    format isa AbstractString && (format = FileIO.DataFormat{Symbol(format)})
+    reference_file = format === nothing ? query_extended(filename) : File{format}(filename)
+    test_reference(reference_file, raw_actual, by, render; kw...)
 end
 
 function test_reference(
