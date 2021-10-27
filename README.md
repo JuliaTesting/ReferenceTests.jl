@@ -32,7 +32,7 @@ to the value of interest.
 
 ```julia
 using ReferenceTests
-@test_reference "stringtest1.txt" string(collect(1:20))
+@test_reference "stringtest1.txt" collect(1:20)
 ```
 
 If you put the above code into your `test/runtests.jl` and
