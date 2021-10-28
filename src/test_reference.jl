@@ -7,7 +7,7 @@ equality test strategy `by`.
 The pipeline of `test_reference` is:
 
 1. preprocess `expr`
-2. read and preprocess `filename`
+2. read and preprocess `filename` via FileIO.jl
 3. compare the results using `by`
 4. if test fails in an interactive session (e.g, `include(test/runtests.jl)`), an interactive dialog will be trigered.
 
@@ -26,7 +26,14 @@ compared. The contents is treated as:
 
 * Images when `expr` is an image type, i.e., `AbstractArray{<:Colorant}`;
 * SHA256 when `filename` endswith `*.sha256`;
+* Any file-type which FileIO.jl handles and with the proper backend loaded;
 * Text as a fallback.
+
+## Any FileIO.jl handled filetype
+
+Any file-types which can be read by [FileIO.jl](https://github.com/JuliaIO/FileIO.jl) can be used.
+Note that most Julia values can be stored using packages such as, e.g.,
+[BSON.jl](https://github.com/JuliaIO/BSON.jl) or [JLD](https://github.com/JuliaIO/JLD.jl) and can thus be used in reference-tests.
 
 ## Images
 
@@ -50,13 +57,27 @@ The hash of the `expr` and content of `filename` are compared.
 
 ## Fallback
 
-Simply test the equality of `expr` and the contents of `filename` without any
-preprocessing.
+Simply test the equality of `expr` and the contents of `filename` without any preprocessing.
+Note that reading `filename` will return a `String`.
 
 # Examples
 
 ```julia
+# compare text-file against string representation of a value
+@test_reference "stringtest1.txt" collect(1:20)
+
+# test number with absolute tolerance 10
+@test_reference "references/string3.txt" 1338 by=(ref, x)->isapprox(ref, x; atol=10)
+
+# store a floating point array ar in BSON-file and compare it back.
+# Note that a Dict is needed and the custom comparison function.
+using BSON
+comp(d1, d2) = keys(d1)==keys(d2) &&
+    all([ v1≈v2 for (v1,v2) in zip(values(d1), values(d2))])
+@test_reference "reftest-files/X.bson" Dict(:ar=>[1, pi, 4.5]) by=comp
+
 # store as string using ImageInTerminal with encoding size (5,10)
+using TestImages
 @test_reference "camera.txt" testimage("cameraman") size=(5,10)
 
 # using folders in the relative path is allowed
@@ -66,11 +87,8 @@ preprocessing.
 # can only check for equality (no tolerance possible)
 @test_reference "references/camera.sha256" testimage("cameraman")
 
-# test images with custom psnr threshold
+# test images with custom Peak Signal-to-Noise Ratio (psnr) threshold
 @test_reference "references/camera.png" testimage("cameraman") by=psnr_equality(20)
-
-# test number with absolute tolerance 10
-@test_reference "references/string3.txt" 1338 by=(ref, x)->isapprox(ref, x; atol=10)
 ```
 """
 macro test_reference(reference, actual, kws...)

@@ -1,5 +1,6 @@
 using Test
 using ImageInTerminal, TestImages, ImageCore, ImageTransformations
+using BSON:BSON
 using FileIO
 using Plots
 using Random
@@ -165,6 +166,18 @@ end
     raw_contents = read(file, String)
     @test_reference file raw_contents format=format"TXT"
     @test_reference file raw_contents format="TXT"
+end
+
+@testset "BSON-files" begin
+    file = "references/array_any.bson"
+    arr_any = [1, "asdf", 3//4]
+    @test_reference file Dict(:ar=>arr_any)
+
+    file = "references/array_float.bson"
+    comp = (d1, d2) -> keys(d1)==keys(d2) &&
+        all([ isequal(v1,v2) for (v1,v2) in zip(values(d1), values(d2))])
+    arr_float = [pi, pi/2, 1.0]
+    @test_reference file Dict(:ar=>arr_float) by=comp
 end
 
 end  # top level testset
