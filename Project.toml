@@ -1,7 +1,7 @@
 name = "ReferenceTests"
 uuid = "324d217c-45ce-50fc-942e-d289b448e8cf"
 authors = ["Christof Stocker <stocker.christof@gmail.com>", "Lyndon White <oxinabox@ucc.asn.au>", "Johnny Chen <johnnychen94@hotmail.com>"]
-version = "0.9.8"
+version = "0.9.9"
 
 [deps]
 DeepDiffs = "ab62b9b5-e342-54a8-a765-a90f495de1a6"

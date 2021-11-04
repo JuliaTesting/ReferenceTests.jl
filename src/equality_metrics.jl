@@ -52,6 +52,9 @@ end
 _psnr(ref::AbstractArray{<:Color3}, x::AbstractArray{<:Color3}) =
     _psnr(channelview(RGB.(ref)), channelview(RGB.(x)), 1.0)
 
+_psnr(ref::AbstractArray{<:ColorTypes.RGBA}, x::AbstractArray{<:ColorTypes.RGBA}) =
+    _psnr(channelview(ref), channelview(x), 1.0)
+
 _psnr(ref::AbstractArray{<:AbstractGray}, x::AbstractArray{<:AbstractGray}) =
     _psnr(channelview(ref), channelview(x), 1.0)
 
