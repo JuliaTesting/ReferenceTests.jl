@@ -59,4 +59,9 @@ _psnr(ref::AbstractArray{<:AbstractGray}, x::AbstractArray{<:AbstractGray}) =
     _psnr(channelview(ref), channelview(x), 1.0)
 
 _psnr(ref::AbstractArray{<:Real}, x::AbstractArray{<:Real}, peakval::Real) =
-    20log10(peakval) - 10log10(euclidean(float.(ref), float.(x)))
+    20log10(peakval) - 10log10(_mse(float.(ref), float.(x)))
+
+function _mse(x, y)
+    @assert length(x) == length(y)
+    return sqeuclidean(x, y)/length(x)
+end
