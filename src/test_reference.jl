@@ -168,7 +168,7 @@ function test_reference(
         )
         render(rendermode, reference, actual)
 
-        if isinteractive() && !force_update()
+        if !isinteractive() && !force_update()
             error("""
             To update the reference images either run the tests interactively with 'include(\"test/runtests.jl\")',
             or to force-update any failing reference images set the  environment variable `JULIA_REFERENCETESTS_UPDATE`
