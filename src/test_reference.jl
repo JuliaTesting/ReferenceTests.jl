@@ -176,11 +176,11 @@ function test_reference(
             """)
         end
 
-        if !force_update() && !input_bool("Replace reference with actual result?")
-            @test false
-        else
+        if force_update() || input_bool("Replace reference with actual result?")
             mv(actual_path, reference_path; force=true)  # overwrite old file it
             @info("Please run the tests again for any changes to take effect")
+        else
+            @test false
         end
     end
 end
