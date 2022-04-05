@@ -168,18 +168,24 @@ function test_reference(
         )
         render(rendermode, reference, actual)
 
-        if !isinteractive()
-            error("You need to run the tests interactively with 'include(\"test/runtests.jl\")' to update reference images")
+        if !isinteractive() && !force_update()
+            error("""
+            To update the reference images either run the tests interactively with 'include(\"test/runtests.jl\")',
+            or to force-update all failing reference images set the environment variable `JULIA_REFERENCETESTS_UPDATE`
+            to "true" and re-run the tests via Pkg.
+            """)
         end
 
-        if !input_bool("Replace reference with actual result?")
-            @test false
-        else
+        if force_update() || input_bool("Replace reference with actual result?")
             mv(actual_path, reference_path; force=true)  # overwrite old file it
             @info("Please run the tests again for any changes to take effect")
+        else
+            @test false
         end
     end
 end
+
+force_update() = tryparse(Bool, get(ENV, "JULIA_REFERENCETESTS_UPDATE", "false")) === true
 
 """
     mismatch_staging_dir()

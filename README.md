@@ -84,6 +84,25 @@ compared as plain text. This is useful for a convenient
 low-storage way of making sure that the return value doesn't
 change for selected test cases.
 
+## Updating References within Package Tests
+
+Reference tests are typically used within a package's `test/runtests.jl`
+test suite. These tests are easy to run via `pkg> test` but
+the child process used within `pkg> test` is non-interactive, so the
+update prompt will not show if there are mismatches.
+
+To update references within a package test suite, there are three options:
+
+- Set the environment variable `JULIA_REFERENCETESTS_UPDATE` to `"true"`
+  and run `pkg> test`, which will force update any non-matches. You can then
+  check changes to any git-tracked reference images before commit.
+- Delete any reference images you wish to update and run `pkg> test`, given
+  that missing references are created automatically.
+- Run the `test/runtests.jl` interactively. This may be easier using
+  the [`TestEnv.jl`](https://github.com/JuliaTesting/TestEnv.jl) package,
+  given that the test environment used by `pkg> test` is a merge of the
+  `src/Project.toml` and `test/Project.toml` environments.
+
 ## Documentation
 
 Check out the **[stable documentation][docs-stable-url]** or **[dev documentation][docs-dev-url]**.
