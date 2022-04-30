@@ -157,11 +157,12 @@ function _do_reference_matching(
     match_result = equiv(reference, actual)
 
     all_info = (;
+        actual,
+        match_result,
+        reference, 
         reference_path,
         reference_dir,
         reference_filename,
-        actual,
-        match_result,
     )
     return all_info
 end
@@ -200,11 +201,12 @@ function test_reference(
     )
     (all_info === nothing) && return nothing
 
+    actual             = all_info.actual
+    match_result       = all_info.match_result
+    reference          = all_info.reference
     reference_path     = all_info.reference_path
     reference_dir      = all_info.reference_dir
     reference_filename = all_info.reference_filename
-    actual             = all_info.actual
-    match_result       = all_info.match_result
 
     if match_result
         @test true # to increase test counter if reached
