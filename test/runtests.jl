@@ -74,8 +74,7 @@ end
         multiline string that does indeed end with a new line.
     """
 
-    # @test_throws ErrorException
-    @test_reference "references/string1.txt" "intentionally wrong to check that this message prints"
+    @test_throws ErrorException @test_reference "references/string1.txt" "intentionally wrong to check that this message prints"
     @test_throws ErrorException @test_reference "references/string5.txt" """
         This is an incorrect
         multiline string that does not end with a new line."""
