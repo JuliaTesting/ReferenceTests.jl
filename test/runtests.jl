@@ -180,4 +180,12 @@ end
     @test_reference file Dict(:ar=>arr_float) by=comp
 end
 
+@testset "`return_bool` kwarg" begin
+    @testset begin
+        x = @test_reference "references/string1.nottxt" "This is not a .txt file, but it should be treated as such.\n" return_bool=true
+        println("Hello world - the value of x is: $(x)") # TODO: delete this line
+        @test x
+    end
+end
+
 end  # top level testset
