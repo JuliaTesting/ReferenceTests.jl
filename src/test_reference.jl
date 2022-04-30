@@ -163,6 +163,7 @@ function _do_reference_matching(
         actual,
         match_result,
     )
+    return all_info
 end
 
 function match_reference(
@@ -178,6 +179,7 @@ function match_reference(
         rendermode;
         kw...,
     )
+    (all_info === nothing) && return nothing
     match_result = all_info.match_result
     return match_result
 end
@@ -196,6 +198,7 @@ function test_reference(
         rendermode;
         kw...,
     )
+    (all_info === nothing) && return nothing
 
     reference_path     = all_info.reference_path
     reference_dir      = all_info.reference_dir
