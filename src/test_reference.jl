@@ -117,6 +117,13 @@ function test_reference(
     rendermode=nothing;
     kw...) where {F <: DataFormat, T}
 
+    if haskey(kw, :return_bool)
+        return_bool = kw[:return_bool]::Bool
+    else
+        return_bool = false
+    end
+    kw = filter(p -> p[1] != :return_bool, kw)
+
     reference_path = reference_file.filename
     reference_dir, reference_filename = splitdir(reference_path)
 
@@ -153,6 +160,7 @@ function test_reference(
     end
 
     if equiv(reference, actual)
+        return_bool && return true
         @test true # to increase test counter if reached
     else  # When test fails
         # Saving actual file so user can look at it
@@ -167,6 +175,8 @@ function test_reference(
             actual=actual_path,
         )
         render(rendermode, reference, actual)
+
+        return_bool && return false
 
         if !isinteractive() && !force_update()
             error("""
