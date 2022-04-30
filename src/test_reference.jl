@@ -157,13 +157,13 @@ function _do_reference_matching(
     match_result = equiv(reference, actual)
 
     all_info = (;
-        actual,
-        match_result,
-        reference, 
-        reference_path,
-        reference_dir,
-        reference_filename,
-        rendermode,
+        actual = actual,
+        match_result = match_result,
+        reference = reference,
+        reference_path = reference_path,
+        reference_dir = reference_dir,
+        reference_filename = reference_filename,
+        rendermode = rendermode,
     )
     return all_info
 end
