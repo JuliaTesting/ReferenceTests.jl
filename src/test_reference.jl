@@ -160,6 +160,8 @@ function _do_reference_matching(
         reference_path,
         reference_dir,
         reference_filename,
+        actual,
+        match_result,
     )
 end
 
