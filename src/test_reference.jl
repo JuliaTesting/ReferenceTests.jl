@@ -163,6 +163,7 @@ function _do_reference_matching(
         reference_path,
         reference_dir,
         reference_filename,
+        rendermode,
     )
     return all_info
 end
@@ -207,6 +208,7 @@ function test_reference(
     reference_path     = all_info.reference_path
     reference_dir      = all_info.reference_dir
     reference_filename = all_info.reference_filename
+    rendermode         = all_info.rendermode
 
     if match_result
         @test true # to increase test counter if reached
