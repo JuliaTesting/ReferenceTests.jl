@@ -191,7 +191,7 @@ function test_reference(
     rendermode=nothing;
     kw...) where {F <: DataFormat, T}
 
-    all_info = match_reference(
+    all_info = _do_reference_matching(
         reference_file,
         raw_actual,
         equiv,
