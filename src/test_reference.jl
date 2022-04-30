@@ -102,15 +102,17 @@ macro test_reference(reference, actual, kws...)
     expr
 end
 
-function test_reference(
-    filename::AbstractString, raw_actual;
-    by = nothing, render = nothing, format = nothing, kw...)
-    format isa AbstractString && (format = FileIO.DataFormat{Symbol(format)})
-    reference_file = format === nothing ? query_extended(filename) : File{format}(filename)
-    test_reference(reference_file, raw_actual, by, render; kw...)
+for f in [:test_reference, :match_reference, :_do_reference_matching]
+    @eval function $f(
+        filename::AbstractString, raw_actual;
+        by = nothing, render = nothing, format = nothing, kw...)
+        format isa AbstractString && (format = FileIO.DataFormat{Symbol(format)})
+        reference_file = format === nothing ? query_extended(filename) : File{format}(filename)
+        $f(reference_file, raw_actual, by, render; kw...)
+    end
 end
 
-function test_reference(
+function _do_reference_matching(
     reference_file::File{F},
     raw_actual::T,
     equiv=nothing,
@@ -152,7 +154,54 @@ function test_reference(
         equiv = default_equality(reference, actual)
     end
 
-    if equiv(reference, actual)
+    match_result = equiv(reference, actual)
+
+    all_info = (;
+        reference_path,
+        reference_dir,
+        reference_filename,
+    )
+end
+
+function match_reference(
+    reference_file::File{F},
+    raw_actual::T,
+    equiv=nothing,
+    rendermode=nothing;
+    kw...) where {F <: DataFormat, T}
+    all_info = _do_reference_matching(
+        reference_file,
+        raw_actual::T,
+        equiv,
+        rendermode;
+        kw...,
+    )
+    match_result = all_info.match_result
+    return match_result
+end
+
+function test_reference(
+    reference_file::File{F},
+    raw_actual::T,
+    equiv=nothing,
+    rendermode=nothing;
+    kw...) where {F <: DataFormat, T}
+
+    all_info = match_reference(
+        reference_file,
+        raw_actual,
+        equiv,
+        rendermode;
+        kw...,
+    )
+
+    reference_path     = all_info.reference_path
+    reference_dir      = all_info.reference_dir
+    reference_filename = all_info.reference_filename
+    actual             = all_info.actual
+    match_result       = all_info.match_result
+
+    if match_result
         @test true # to increase test counter if reached
     else  # When test fails
         # Saving actual file so user can look at it
