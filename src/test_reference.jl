@@ -117,11 +117,7 @@ function test_reference(
     rendermode=nothing;
     kw...) where {F <: DataFormat, T}
 
-    if haskey(kw, :return_bool)
-        return_bool = kw[:return_bool]::Bool
-    else
-        return_bool = false
-    end
+    return_bool = get(kw, :return_bool, false)::Bool
     kw = filter(p -> p[1] != :return_bool, kw)
 
     reference_path = reference_file.filename
