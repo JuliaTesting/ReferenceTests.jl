@@ -16,6 +16,7 @@ end
 refambs = detect_ambiguities(ImageInTerminal, Base, Core)
 
 using ReferenceTests
+const match_reference = ReferenceTests.match_reference
 ambs = detect_ambiguities(ReferenceTests, ImageInTerminal, Base, Core)
 
 strip_summary(content::String) = join(split(content, "\n")[2:end], "\n")
@@ -81,6 +82,7 @@ end
 
 @testset "string as unknown file type" begin
     @test_reference "references/string1.nottxt" "This is not a .txt file, but it should be treated as such.\n"
+    @test match_reference("references/string1.nottxt", "This is not a .txt file, but it should be treated as such.\n")
 end
 
 @testset "images as txt using ImageInTerminal" begin
