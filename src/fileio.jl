@@ -79,7 +79,8 @@ _convert(::Type{DataFormat{:SHA256}}, x; kw...) = bytes2hex(sha256(string(x)))
 function _convert(::Type{DataFormat{:SHA256}}, img::AbstractArray{<:Colorant}; kw...)
     # encode image into SHA256
     size_str = bytes2hex(sha256(reinterpret(UInt8,[map(Int64,size(img))...])))
-    img_str = bytes2hex(sha256(reinterpret(UInt8,vec(rawview(channelview(img))))))
+    img_bytes = vec(ImageCore.rawview(ImageCore.channelview(img)))
+    img_str = bytes2hex(sha256(reinterpret(UInt8, img_bytes)))
 
     return size_str * img_str
 end

@@ -50,13 +50,13 @@ end
 
 # a simplified PSNR is sufficient since we only use it to approximately compare two images
 _psnr(ref::AbstractArray{<:Color3}, x::AbstractArray{<:Color3}) =
-    _psnr(channelview(RGB.(ref)), channelview(RGB.(x)), 1.0)
+    _psnr(ImageCore.channelview(RGB.(ref)), ImageCore.channelview(RGB.(x)), 1.0)
 
 _psnr(ref::AbstractArray{<:ColorTypes.Transparent3}, x::AbstractArray{<:ColorTypes.Transparent3}) =
-    _psnr(channelview(ARGB.(ref)), channelview(ARGB.(x)), 1.0)
+    _psnr(ImageCore.channelview(ARGB.(ref)), ImageCore.channelview(ARGB.(x)), 1.0)
 
 _psnr(ref::AbstractArray{<:AbstractGray}, x::AbstractArray{<:AbstractGray}) =
-    _psnr(channelview(ref), channelview(x), 1.0)
+    _psnr(ImageCore.channelview(ref), ImageCore.channelview(x), 1.0)
 
 _psnr(ref::AbstractArray{<:Real}, x::AbstractArray{<:Real}, peakval::Real) =
     20log10(peakval) - 10log10(_mse(float.(ref), float.(x)))

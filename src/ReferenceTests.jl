@@ -1,10 +1,13 @@
 module ReferenceTests
 
+using LazyModules
+
 using Test
-using ImageCore
+using Colors
 using Distances
 using FileIO
-using ImageInTerminal
+@lazy import ImageCore = "a09fc81d-aa75-5fe9-8630-4744c3626534"
+@lazy import ImageInTerminal = "d8c32880-2388-543b-8c61-d9f865259254"
 using SHA
 using DeepDiffs
 using Random
