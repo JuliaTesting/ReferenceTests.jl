@@ -1,9 +1,8 @@
 using Test
-using ImageInTerminal, TestImages, ImageCore, ImageTransformations
-using BSON:BSON
 using FileIO
-using Plots
+using BSON: BSON
 using Random
+using ReferenceTests
 
 if isinteractive()
     @info ("In interactive use, one should respond \"n\" when the program"
@@ -12,17 +11,20 @@ else
     @info ("Ten tests should correctly report failure in the transcript"
            * " (but not the test summary).")
 end
-# check for ambiguities
-refambs = detect_ambiguities(ImageInTerminal, Base, Core)
 
-using ReferenceTests
-ambs = detect_ambiguities(ReferenceTests, ImageInTerminal, Base, Core)
+
+ambs = detect_ambiguities(ReferenceTests, Base, Core)
+@test isempty(ambs)
+
+# to properly test world age issues, the full test dependencies must be loaded later
+include("test_no_world_age_issues.jl")
+
+using ImageInTerminal, TestImages, ImageCore, ImageTransformations
+using Plots
 
 strip_summary(content::String) = join(split(content, "\n")[2:end], "\n")
 
 @testset "ReferenceTests" begin
-
-@test Set(setdiff(ambs, refambs)) == Set{Tuple{Method,Method}}()
 
 # load/create some example images
 lena = testimage("lena_color_256")
