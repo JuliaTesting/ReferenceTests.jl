@@ -3,15 +3,25 @@ using FileIO
 using BSON: BSON
 using Random
 using ReferenceTests
+using Logging
+
+ci = tryparse(Bool, get(ENV, "CI", "false")) === true && !isinteractive()
+@show ci
+
+# minimize messages when testing locally, all messages on CI
+test_logger = ci ? current_logger() : NullLogger()
 
 if isinteractive()
-    @info ("In interactive use, one should respond \"n\" when the program"
-           * " offers to create or replace files associated with some tests.")
+    @info (
+        "In interactive use, one should respond \"n\" when the program " *
+        "offers to create or replace files associated with some tests."
+    )
 else
-    @info ("Ten tests should correctly report failure in the transcript"
-           * " (but not the test summary).")
+    ci && @info (
+        "Ten tests should correctly report failure in the transcript " *
+        "(but not the test summary)."
+    )
 end
-
 
 ambs = detect_ambiguities(ReferenceTests, Base, Core)
 @test isempty(ambs)
@@ -27,7 +37,7 @@ strip_summary(content::String) = join(split(content, "\n")[2:end], "\n")
 @testset "ReferenceTests" begin
 
 # load/create some example images
-lena = testimage("lena_color_256")
+monarch = testimage("monarch_color_256")
 camera = testimage("cameraman")
 cameras = similar(camera, size(camera)..., 2)
 copyto!(view(cameras,:,:,1), camera)
@@ -75,10 +85,12 @@ end
         multiline string that does indeed end with a new line.
     """
 
-    @test_throws ErrorException @test_reference "references/string1.txt" "intentionally wrong to check that this message prints"
-    @test_throws ErrorException @test_reference "references/string5.txt" """
-        This is an incorrect
-        multiline string that does not end with a new line."""
+    with_logger(test_logger) do
+        @test_throws ErrorException @test_reference "references/string1.txt" "intentionally wrong to check that this message prints"
+        @test_throws ErrorException @test_reference "references/string5.txt" """
+            This is an incorrect
+            multiline string that does not end with a new line."""
+    end
 end
 
 @testset "string as unknown file type" begin
@@ -86,10 +98,9 @@ end
 end
 
 @testset "images as txt using XTermColors" begin
-    #@test_throws MethodError @test_reference "references/fail.txt" rand(2,2)
-
+    # @test_throws MethodError @test_reference "references/fail.txt" rand(2,2)
     @test_reference "references/camera.txt" camera size=(5,10)
-    @test_reference "references/lena.txt" lena
+    @test_reference "references/moarch.txt" monarch
 end
 
 @testset "plain ansi string" begin
@@ -98,12 +109,15 @@ end
         @io2str(printstyled(IOContext(::IO, :color=>true), "this should be blue", color=:blue)),
         render = ReferenceTests.BeforeAfterFull()
     )
-    @test_throws ErrorException @test_reference(
-        "references/ansii.txt",
-        @io2str(printstyled(IOContext(::IO, :color=>true), "this should be red", color=:red)),
-        render = ReferenceTests.BeforeAfterFull()
-    )
+    with_logger(test_logger) do
+        @test_throws ErrorException @test_reference(
+            "references/ansii.txt",
+            @io2str(printstyled(IOContext(::IO, :color=>true), "this should be red", color=:red)),
+            render = ReferenceTests.BeforeAfterFull()
+        )
+    end
 end
+
 
 @testset "string as SHA" begin
     @test_reference "references/number1.sha256" 1337
@@ -115,14 +129,16 @@ end
 
 @testset "images as SHA" begin
     @test_reference "references/camera.sha256" camera
-    @test_reference "references/lena.sha256" convert(Matrix{RGB{Float64}}, lena)
+    @test_reference "references/monarch.sha256" convert(Matrix{RGB{Float64}}, monarch)
 end
 
 @testset "images as PNG" begin
     @test_reference "references/camera.png" imresize(camera, (64,64))
     @test_reference "references/camera.png" imresize(camera, (64,64)) by=psnr_equality(25)
-    @test_throws ErrorException @test_reference "references/camera.png" imresize(lena, (64,64))
-    @test_throws Exception @test_reference "references/camera.png" camera # unequal size
+    with_logger(test_logger) do
+        @test_throws ErrorException @test_reference "references/camera.png" imresize(monarch, (64,64))
+        @test_throws Exception @test_reference "references/camera.png" camera # unequal size
+    end
 end
 
 @testset "Plots as PNG images" begin
@@ -136,31 +152,38 @@ end
 using DataFrames, CSVFiles
 @testset "DataFrame as CSV" begin
     @test_reference "references/dataframe.csv" DataFrame(v1=[1,2,3], v2=["a","b","c"])
-    @test_throws ErrorException @test_reference "references/dataframe.csv" DataFrame(v1=[1,2,3], v2=["c","b","c"])
-
+    with_logger(test_logger) do
+        @test_throws ErrorException @test_reference "references/dataframe.csv" DataFrame(v1=[1,2,3], v2=["c","b","c"])
+    end
 end
 
-@testset "Create new $ext" for (ext, val) in (
-    (".csv", DataFrame(v1=[1,2,3], v2=["c","b","c"])),
-    (".png", imresize(camera, (64,64))),
-    (".txt", "Lorem ipsum dolor sit amet, labore et dolore magna aliqua."),
+@testset "Create new .$ext" for (ext, val) in (
+    ("csv", DataFrame(v1=[1,2,3], v2=["c","b","c"])),
+    ("png", imresize(camera, (64,64))),
+    ("txt", "Lorem ipsum dolor sit amet, labore et dolore magna aliqua."),
 )
-    newfilename = "references/newfilename.$ext"
-    @assert !isfile(newfilename)
-    @test_reference newfilename val  # this should create it
-    @test isfile(newfilename)  # Was created
-    @test_reference newfilename val  # Matches expected content
-    rm(newfilename, force=true)
+    mktempdir() do path
+        newfilename = joinpath(path, "newfilename.$ext")
+        @assert !isfile(newfilename)
+        with_logger(test_logger) do
+            @test_reference newfilename val  # this should create it
+        end
+        @test isfile(newfilename)  # Was created
+        @test_reference newfilename val  # Matches expected content
+    end
 end
 
 @testset "Create new image as txt" begin
-    # This is a sperate testset as need to use the `size` argument to ``@test_reference`
-    newfilename = "references/new_camera.txt"
-    @assert !isfile(newfilename)
-    @test_reference newfilename camera size=(5,10)  # this should create it
-    @test isfile(newfilename)  # Was created
-    @test_reference newfilename camera size=(5,10) # Matches expected content
-    rm(newfilename, force=true)
+    # This is a separate testset as need to use the `size` argument to ``@test_reference`
+    mktempdir() do path
+        newfilename = joinpath(path, "new_camera.txt")
+        @assert !isfile(newfilename)
+        with_logger(test_logger) do
+            @test_reference newfilename camera size=(5,10)  # this should create it
+        end
+        @test isfile(newfilename)  # Was created
+        @test_reference newfilename camera size=(5,10) # Matches expected content
+    end
 end
 
 @testset "format keyword" begin
