@@ -56,11 +56,12 @@ function _convert(
     size = (20,40), kw...)
 
     # encode image into string
-    strs = @withcolor ImageInTerminal.encodeimg(
-        ImageInTerminal.SmallBlocks(),
-        ImageInTerminal.TermColor256(),
+    strs = @withcolor XTermColors.ascii_show(
         img,
-        size...)[1]
+        XTermColors.TermColor8bit(),
+        :small,
+        size
+    )
     return join(strs,'\n')
 end
 

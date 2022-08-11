@@ -15,7 +15,12 @@ function render_item(::BeforeAfterLimited, item)
     println()
 end
 function render_item(::BeforeAfterImage, item)
-    str_item = @withcolor ImageInTerminal.encodeimg(ImageInTerminal.SmallBlocks(), ImageInTerminal.TermColor256(), item, 20, 40)[1]
+    str_item = @withcolor XTermColors.ascii_show(
+        item,
+        XTermColors.TermColor8bit(),
+        :small,
+        (20, 40)
+    )
     println("eltype: ", eltype(item))
     println("size: ", map(length, axes(item)))
     println("thumbnail:")

@@ -7,7 +7,7 @@ using Colors
 using Distances
 using FileIO
 @lazy import ImageCore = "a09fc81d-aa75-5fe9-8630-4744c3626534"
-@lazy import ImageInTerminal = "d8c32880-2388-543b-8c61-d9f865259254"
+@lazy import XTermColors = "c8c2cc18-de81-4e68-b407-38a3a0c0491f"
 using SHA
 using DeepDiffs
 using Random
