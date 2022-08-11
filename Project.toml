@@ -17,11 +17,11 @@ XTermColors = "c8c2cc18-de81-4e68-b407-38a3a0c0491f"
 
 [compat]
 BSON = "0.3"
-Colors = "0.10, 0.11, 0.12"
+Colors = "0.10 - 0.12"
 CSVFiles = "1"
-DataFrames = "0.21, 0.22"
+DataFrames = "0.21 - 0.22"
 DeepDiffs = "1.1"
-Distances = "0.7, 0.8, 0.9, 0.10"
+Distances = "0.7 - 0.10"
 FileIO = "1"
 GR = "= 0.50.1"
 ImageCore = "0.8.1, 0.9"
@@ -31,7 +31,7 @@ LazyModules = "0.3"
 Plots = "= 1.4.3"
 TestImages = "0.6, 1"
 XTermColors = "0.2"
-julia = "1"
+julia = "1.6"
 
 [extras]
 BSON = "fbb218c0-5317-5bc6-957e-2ee96dd4b1f0"
