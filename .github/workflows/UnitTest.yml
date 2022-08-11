@@ -14,7 +14,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        julia-version: ['1.0', '1', 'nightly']
+        julia-version:
+          - '1.6'  # lowest supported julia version declared in `Project.toml`
+          - '1'  # latest release
+          - 'nightly'
         os: [ubuntu-latest]
         arch: [x64]
         include:
@@ -24,41 +27,15 @@ jobs:
           - os: macOS-latest
             julia-version: '1'
             arch: x64
-
     env:
         REFERENCE_TESTS_STAGING_PATH: "~/mismatches/"
     steps:
-      - uses: actions/checkout@v1.0.0
+      - uses: actions/checkout@v3
       - name: "Set up Julia"
-        uses: julia-actions/setup-julia@v1
+        uses: julia-actions/setup-julia@latest
         with:
           version: ${{ matrix.julia-version }}
-
-      - name: Cache artifacts
-        uses: actions/cache@v1
-        env:
-          cache-name: cache-artifacts
-        with:
-          path: ~/.julia/artifacts
-          key: ${{ runner.os }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-test-${{ env.cache-name }}-
-            ${{ runner.os }}-test-
-            ${{ runner.os }}-
-
-      # Pkg version resolver isn't smart enough for old Julia versions; we manually aid it.
-      - name: "Compat fix for Julia < v1.3.0"
-        if: ${{ matrix.julia-version == '1.0' }}
-        run: |
-          using Pkg
-          Pkg.add([
-            PackageSpec(name="Reexport", version="0.2"),
-            PackageSpec(name="Plots", version="1.4.3"),
-            PackageSpec(name="GR", version="0.50.1"),
-            PackageSpec(name="DataFrames", version="0.22.7"),
-            PackageSpec(name="AbstractFFTs", version="0.5"),
-          ])
-        shell: julia --project=. --startup=no --color=yes {0}
+      - uses: julia-actions/cache@v1
       # rerun the test twice to (1) make sure regeneration works (2) generated references match what's uploaded
       - name: "Unit Test"
         shell: bash
@@ -68,12 +45,12 @@ jobs:
           julia --color=yes --check-bounds=yes --project -e "using Pkg; Pkg.test(coverage=true)"
           julia --color=yes --check-bounds=yes --project -e "using Pkg; Pkg.test(coverage=true)"
       - name: Upload Mismatched Files as a Build Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: "Mismatched Files"
           path: "~/mismatches/"
       
-      - uses: julia-actions/julia-processcoverage@v1
-      - uses: codecov/codecov-action@v1
+      - uses: julia-actions/julia-processcoverage@latest
+      - uses: codecov/codecov-action@v3
         with:
           file: lcov.info
