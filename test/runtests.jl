@@ -19,7 +19,7 @@ ambs = detect_ambiguities(ReferenceTests, Base, Core)
 # to properly test world age issues, the full test dependencies must be loaded later
 include("test_no_world_age_issues.jl")
 
-using ImageInTerminal, TestImages, ImageCore, ImageTransformations
+using XTermColors, TestImages, ImageCore, ImageTransformations
 using Plots
 
 strip_summary(content::String) = join(split(content, "\n")[2:end], "\n")
@@ -85,7 +85,7 @@ end
     @test_reference "references/string1.nottxt" "This is not a .txt file, but it should be treated as such.\n"
 end
 
-@testset "images as txt using ImageInTerminal" begin
+@testset "images as txt using XTermColors" begin
     #@test_throws MethodError @test_reference "references/fail.txt" rand(2,2)
 
     @test_reference "references/camera.txt" camera size=(5,10)

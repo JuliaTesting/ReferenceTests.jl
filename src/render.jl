@@ -15,9 +15,9 @@ function render_item(::BeforeAfterLimited, item)
     println()
 end
 function render_item(::BeforeAfterImage, item)
-    str_item = @withcolor ImageInTerminal.ascii_show(
+    str_item = @withcolor XTermColors.ascii_show(
         item,
-        ImageInTerminal.TermColor8bit(),
+        XTermColors.TermColor8bit(),
         :small,
         (20, 40)
     )

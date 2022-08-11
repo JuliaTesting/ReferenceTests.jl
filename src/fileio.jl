@@ -56,9 +56,9 @@ function _convert(
     size = (20,40), kw...)
 
     # encode image into string
-    strs = @withcolor ImageInTerminal.ascii_show(
+    strs = @withcolor XTermColors.ascii_show(
         img,
-        ImageInTerminal.TermColor8bit(),
+        XTermColors.TermColor8bit(),
         :small,
         size
     )
