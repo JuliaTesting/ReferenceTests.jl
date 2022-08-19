@@ -58,7 +58,7 @@ function _convert(
     # encode image into string
     strs = @withcolor XTermColors.ascii_show(
         img,
-        XTermColors.TermColor8bit(),
+        Base.invokelatest(XTermColors.TermColor8bit),
         :small,
         size
     )
