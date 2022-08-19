@@ -17,7 +17,7 @@ end
 function render_item(::BeforeAfterImage, item)
     str_item = @withcolor XTermColors.ascii_show(
         item,
-        XTermColors.TermColor8bit(),
+        Base.invokelatest(XTermColors.TermColor8bit),
         :small,
         (20, 40)
     )
