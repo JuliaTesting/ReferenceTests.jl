@@ -9,6 +9,7 @@ makedocs(
     sitename = "ReferenceTests.jl",
     authors = "Christof Stocker",
     linkcheck = !("skiplinks" in ARGS),
+    checkdocs = :exports,
     pages = Any[
         "Home" => "index.md",
     ]

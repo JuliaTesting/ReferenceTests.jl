@@ -11,7 +11,7 @@ common example of such would be a custom `Base.show` method.
 
 # Examples
 
-```jldoctest
+```julia-repl
 julia> using ReferenceTests
 
 julia> @io2str print(::IO, "Hello World")
