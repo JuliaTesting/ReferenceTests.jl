@@ -1,6 +1,6 @@
 The ReferenceTests.jl package is licensed under the MIT "Expat" License:
 
-> Copyright (c) 2017,2018,2019: Christof Stocker. Lyndon White, Johnny Chen
+> Copyright (c) 2017,2018,2020,2021,2022: Christof Stocker, Frames White, Johnny Chen
 > 
 > Permission is hereby granted, free of charge, to any person obtaining a copy
 > of this software and associated documentation files (the "Software"), to deal
