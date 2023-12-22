@@ -5,11 +5,10 @@ using Random
 using ReferenceTests
 using Logging
 
-ci = tryparse(Bool, get(ENV, "CI", "false")) === true && !isinteractive()
-@show ci
+# option to minimize messages
+const verbose = tryparse(Bool, get(ENV, "VERBOSE", "true")) === true
 
-# minimize messages when testing locally, all messages on CI
-test_logger = ci ? current_logger() : NullLogger()
+const test_logger = verbose ? current_logger() : NullLogger()
 
 if isinteractive()
     @info (
@@ -17,7 +16,7 @@ if isinteractive()
         "offers to create or replace files associated with some tests."
     )
 else
-    ci && @info (
+    verbose && @info (
         "Ten tests should correctly report failure in the transcript " *
         "(but not the test summary)."
     )
