@@ -132,15 +132,11 @@ function test_reference(
     if !isfile(reference_path)  # when reference file doesn't exists
         mkpath(reference_dir)
         savefile(reference_file, actual)
-        @info(
-            "Reference file for \"$reference_filename\" did not exist. It has been created",
-            new_reference=reference_path,
-        )
+        @info """Reference file for \"$reference_filename\" did not exist. It has been created:
+        $(render(rendermode, actual))
+        """ new_reference = reference_path
 
-        # TODO: move encoding out from render
-        render(rendermode, actual)
-
-        @info("Please run the tests again for any changes to take effect")
+        @info "Please run the tests again for any changes to take effect"
         return nothing # skip current test case
     end
 
@@ -161,13 +157,10 @@ function test_reference(
         savefile(actual_file, actual)
 
         # Report to user.
-        @info(
-            "Reference Test for \"$reference_filename\" failed.",
-            reference=reference_path,
-            actual=actual_path,
-        )
-        render(rendermode, reference, actual)
-
+        @info """Reference Test for \"$reference_filename\" failed:
+        $(render(rendermode, reference, actual))
+        """ reference = reference_path actual = actual_path
+        
         if !isinteractive() && !force_update()
             error("""
             To update the reference images either run the tests interactively with 'include(\"test/runtests.jl\")',
@@ -178,7 +171,7 @@ function test_reference(
 
         if force_update() || input_bool("Replace reference with actual result?")
             mv(actual_path, reference_path; force=true)  # overwrite old file it
-            @info("Please run the tests again for any changes to take effect")
+            @info "Please run the tests again for any changes to take effect"
         else
             @test false
         end

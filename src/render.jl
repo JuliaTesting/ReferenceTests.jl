@@ -9,45 +9,56 @@ struct BeforeAfterLimited <: BeforeAfter end
 struct BeforeAfterFull <: BeforeAfter end
 struct BeforeAfterImage <: BeforeAfter end
 
-render_item(::RenderMode, item) = println(item)
+color_buffer(args...) =
+    IOContext(PipeBuffer(), :color=>Base.get_have_color(), args...)
+
+function render_item(::RenderMode, item)
+    io = color_buffer()
+    print(io, item)
+    read(io, String)
+end
 function render_item(::BeforeAfterLimited, item)
-    show(IOContext(stdout, :limit=>true, :displaysize=>(20,80)), "text/plain", item)
-    println()
+    io = color_buffer(
+        :limit=>true,
+        :displaysize=>(20,80)
+    )
+    show(io, "text/plain", item)
+    read(io, String)
 end
 function render_item(::BeforeAfterImage, item)
-    str_item = @withcolor XTermColors.ascii_show(
+    io = color_buffer()
+    println(io, "eltype: ", eltype(item))
+    println(io, "size: ", map(length, axes(item)))
+    println(io, "thumbnail:")
+    strs = @withcolor XTermColors.ascii_show(
         item,
         Base.invokelatest(XTermColors.TermColor8bit),
         :small,
         (20, 40)
     )
-    println("eltype: ", eltype(item))
-    println("size: ", map(length, axes(item)))
-    println("thumbnail:")
-    println.(str_item)
+    print(io, join(strs, '\n'))
+    read(io, String)
 end
 
 ## 2 arg form render for comparing
-function render(mode::BeforeAfter, reference, actual)
-    println("- REFERENCE -------------------")
-    render_item(mode, reference)
-    println("-------------------------------")
-    println("- ACTUAL ----------------------")
-    render_item(mode, actual)
-    println("-------------------------------")
-end
-function render(::Diff, reference, actual)
-    println("- DIFF ------------------------")
-    @withcolor println(deepdiff(reference, actual))
-    println("-------------------------------")
-end
+render(mode::BeforeAfter, reference, actual) = """
+    - REFERENCE -------------------
+    $(render_item(mode, reference))
+    -------------------------------
+    - ACTUAL ----------------------
+    $(render_item(mode, actual))
+    -------------------------------"""
+
+render(mode::Diff, reference, actual) = """
+    - DIFF ------------------------
+    $(@withcolor(render_item(mode, deepdiff(reference, actual))))
+    -------------------------------"""
 
 ## 1 arg form render for new content
-function render(mode::RenderMode, actual)
-    println("- NEW CONTENT -----------------")
-    render_item(mode, actual)
-    println("-------------------------------")
-end
+render(mode::RenderMode, actual) = """
+    - NEW CONTENT -----------------
+    $(render_item(mode, actual))
+    -------------------------------"""
 
 """
     default_rendermode(::DataFormat, actual)
