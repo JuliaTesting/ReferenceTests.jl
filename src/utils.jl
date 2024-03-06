@@ -33,7 +33,7 @@ function io2str_impl(expr::Expr)
         esc(quote
             $nvar = Base.IOBuffer()
             $expr
-            Base.String(Base.resize!($nvar.data, $nvar.size))
+            Base.String(take!($nvar))
         end)
     else
         :(throw(ArgumentError("Invalid use of `@io2str` macro: The given expression `$($(string(expr)))` does not contain `::IO` placeholder in a supported manner")))
