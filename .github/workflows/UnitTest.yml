@@ -42,7 +42,9 @@ jobs:
         run: |
           julia --color=yes --check-bounds=yes --project -e "using Pkg; Pkg.test(coverage=true)"
           rm -rf test/references
+          export JULIA_REFERENCETESTS_UPDATE=true
           julia --color=yes --check-bounds=yes --project -e "using Pkg; Pkg.test(coverage=true)"
+          export JULIA_REFERENCETESTS_UPDATE=false
           julia --color=yes --check-bounds=yes --project -e "using Pkg; Pkg.test(coverage=true)"
       - name: Upload Mismatched Files as a Build Artifact
         uses: actions/upload-artifact@v3
