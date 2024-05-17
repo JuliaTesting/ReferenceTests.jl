@@ -37,10 +37,9 @@ using ReferenceTests
 
 If you put the above code into your `test/runtests.jl` and
 execute the file in an interactive julia session (i.e. with
-`include`), then it will trigger an interactive dialog if the
-results don't match. This dialog allows the user to update the
-reference files. If you do not want to be prompted, just
-delete the reference data before running the tests.
+`include`), then it will trigger an interactive dialog if the refrence is missing or the results don't match.
+This dialog allows the user to create/update the reference files.
+If you do not want to be prompted, set `ENV["JULIA_REFERENCETESTS_UPDATE"]=true` before running.
 
 ![readme1](https://user-images.githubusercontent.com/10854026/30002940-3ba480b0-90b6-11e7-93f6-148ac38bd695.png)
 
@@ -91,13 +90,11 @@ test suite. These tests are easy to run via `pkg> test` but
 the child process used within `pkg> test` is non-interactive, so the
 update prompt will not show if there are mismatches.
 
-To update references within a package test suite, there are three options:
+To update/create references within a package test suite, there are two options:
 
 - Set the environment variable `JULIA_REFERENCETESTS_UPDATE` to `"true"`
-  and run `pkg> test`, which will force update any non-matches. You can then
-  check changes to any git-tracked reference images before commit.
-- Delete any reference images you wish to update and run `pkg> test`, given
-  that missing references are created automatically.
+  and run `pkg> test`, which will force update any non-matches and create any missing files.
+  You can then check changes to any git-tracked reference images before commit.
 - Run the `test/runtests.jl` interactively. This may be easier using
   the [`TestEnv.jl`](https://github.com/JuliaTesting/TestEnv.jl) package,
   given that the test environment used by `pkg> test` is a merge of the

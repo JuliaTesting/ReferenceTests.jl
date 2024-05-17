@@ -162,13 +162,15 @@ end
     mktempdir() do path
         newfilename = joinpath(path, "newfilename.$ext")
         @assert !isfile(newfilename)
-        with_logger(test_logger) do
-            @test_reference newfilename val  # this should create it
+        withenv("JULIA_REFERENCETESTS_UPDATE"=>true) do
+            with_logger(test_logger) do
+                @test_reference newfilename val  # this should create it
+            end
         end
         @test isfile(newfilename)  # Was created
         @test_reference newfilename val  # Matches expected content
     end
-end
+ end
 
 @testset "Create new image as txt" begin
     # This is a separate testset as need to use the `size` argument to ``@test_reference`
@@ -176,7 +178,9 @@ end
         newfilename = joinpath(path, "new_camera.txt")
         @assert !isfile(newfilename)
         with_logger(test_logger) do
-            @test_reference newfilename camera size=(5,10)  # this should create it
+            withenv("JULIA_REFERENCETESTS_UPDATE"=>true) do
+                @test_reference newfilename camera size=(5,10)  # this should create it
+            end
         end
         @test isfile(newfilename)  # Was created
         @test_reference newfilename camera size=(5,10) # Matches expected content

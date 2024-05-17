@@ -117,9 +117,7 @@ function test_reference(
     rendermode=nothing;
     kw...) where {F <: DataFormat, T}
 
-    reference_path = reference_file.filename
-    reference_dir, reference_filename = splitdir(reference_path)
-
+    reference_filename = basename(reference_file.filename)
     actual = _convert(F, raw_actual; kw...)
 
     # infer the default rendermode here
@@ -129,14 +127,14 @@ function test_reference(
         rendermode = default_rendermode(F, actual)
     end
 
-    if !isfile(reference_path)  # when reference file doesn't exists
-        mkpath(reference_dir)
-        savefile(reference_file, actual)
-        @info """Reference file for \"$reference_filename\" did not exist. It has been created:
-        $(render(rendermode, actual))
-        """ new_reference = reference_path
+    if !isfile(reference_file.filename)  # when reference file doesn't exists
+        actual_path = save_mismatch_file(reference_file, actual)
 
-        @info "Please run the tests again for any changes to take effect"
+        @info """Reference file for \"$reference_filename\" did not exist:
+        $(render(rendermode, actual))
+        """ actual=actual_path
+
+        handle_mismatch(reference_file, actual_path)
         return nothing # skip current test case
     end
 
@@ -152,33 +150,44 @@ function test_reference(
         @test true # to increase test counter if reached
     else  # When test fails
         # Saving actual file so user can look at it
-        actual_path = joinpath(mismatch_staging_dir(), reference_filename)
-        actual_file = typeof(reference_file)(actual_path)
-        savefile(actual_file, actual)
+        actual_path = save_mismatch_file(reference_file, actual)
 
         # Report to user.
         @info """Reference Test for \"$reference_filename\" failed:
         $(render(rendermode, reference, actual))
-        """ reference = reference_path actual = actual_path
-        
-        if !isinteractive() && !force_update()
-            error("""
-            To update the reference images either run the tests interactively with 'include(\"test/runtests.jl\")',
-            or to force-update all failing reference images set the environment variable `JULIA_REFERENCETESTS_UPDATE`
-            to "true" and re-run the tests via Pkg.
-            """)
-        end
-
-        if force_update() || input_bool("Replace reference with actual result?")
-            mv(actual_path, reference_path; force=true)  # overwrite old file it
-            @info "Please run the tests again for any changes to take effect"
-        else
-            @test false
-        end
+        """ reference=reference_file.filename actual=actual_path
+        handle_mismatch(reference_file, actual_path)
     end
 end
 
-force_update() = tryparse(Bool, get(ENV, "JULIA_REFERENCETESTS_UPDATE", "false")) === true
+function save_mismatch_file(reference_file::File{F}, actual) where F
+    # Saving actual file so user can look at it
+    actual_path = joinpath(mismatch_staging_dir(), basename(reference_file.filename))
+    actual_file = File{F}(actual_path)
+    
+    savefile(actual_file, actual)
+    return actual_path
+end
+
+function handle_mismatch(reference_file, actual_path)
+    if !isinteractive() && !force_update()
+        error("""
+        To update the reference images either run the tests interactively with 'include(\"test/runtests.jl\")',
+        or to force-update/create all failing reference images set the environment variable `JULIA_REFERENCETESTS_UPDATE`
+        to "true" and re-run all tests.
+        """)
+    end
+
+    if force_update() || input_bool("Replace reference with actual result?")
+        mkpath(dirname(reference_file.filename))
+        mv(actual_path, reference_file.filename; force=true)  # overwrite old file
+        @info "Please run the tests again for any changes to take effect"
+    else
+        @test false
+    end
+end
+
+force_update() = tryparse(Bool, get(ENV, "JULIA_REFERENCETESTS_UPDATE", "false"))
 
 """
     mismatch_staging_dir()
