@@ -17,7 +17,7 @@ XTermColors = "c8c2cc18-de81-4e68-b407-38a3a0c0491f"
 
 [compat]
 BSON = "0.3"
-Colors = "0.10 - 0.12"
+Colors = "0.10 - 0.13"
 CSVFiles = "1"
 DataFrames = "0.21 - 0.22, 1"
 DeepDiffs = "1"
