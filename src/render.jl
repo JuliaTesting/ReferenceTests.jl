@@ -30,13 +30,17 @@ function render_item(::BeforeAfterImage, item)
     println(io, "eltype: ", eltype(item))
     println(io, "size: ", map(length, axes(item)))
     println(io, "thumbnail:")
-    strs = @withcolor XTermColors.ascii_show(
-        item,
-        Base.invokelatest(XTermColors.TermColor8bit),
-        :small,
-        (20, 40)
-    )
-    print(io, join(strs, '\n'))
+    if Base.get_bool_env("REFERENCETESTS_SIXEL", false)
+        sixel_encode(io, item)
+    else
+        strs = @withcolor XTermColors.ascii_show(
+            item,
+            Base.invokelatest(XTermColors.TermColor8bit),
+            :small,
+            (20, 40)
+        )
+        print(io, join(strs, '\n'))
+    end
     read(io, String)
 end
 

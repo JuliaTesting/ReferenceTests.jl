@@ -11,6 +11,7 @@ using FileIO
 using SHA
 using DeepDiffs
 using Random
+using Sixel
 
 export
     @withcolor,
