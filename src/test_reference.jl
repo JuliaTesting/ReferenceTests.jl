@@ -15,7 +15,9 @@ Arguments:
 
 * `filename::String`: _relative_ path to the file that contains the macro invocation.
 * `expr`: the actual content used to compare.
-* `by`: the equality test function. By default it is `isequal` if not explicitly stated. A custom selector function can be set permanently using 
+* `by`: the equality test function. By default it is `isequal` if not explicitly stated.
+  A custom selector function that returns an equality function for a given `(reference, actual)` input
+  can be set permanently using `default_equality_selector!` or temporarily using `with_default_equality_selector`.
 * `format`: Force reading the file using a specific format
 
 # Types
@@ -102,6 +104,8 @@ macro test_reference(reference, actual, kws...)
     expr
 end
 
+function default_equality end
+
 const DEFAULT_EQUALITY_SELECTOR = Ref{Any}(default_equality)
 
 """
@@ -117,13 +121,18 @@ The equality function for a given `@test_reference` can be overridden using the 
 ## Example
 
 ```julia
+# we have some image comparison function we want to use by default
+custom_image_equality(reference, actual) = ...
+
+# our selector picks `custom_image_equality` for images and `isequal` for the rest
 custom_selector(actual, reference) = isequal
 custom_selector(reference::AbstractArray{<:Colorant}, actual::AbstractArray{<:Colorant}) =
-    custom_image_equality(reference, actual)
+    custom_image_equality
 
 default_equality_selector!(custom_selector)
 
-@test_reference "image.png" some_image # uses custom_image_equality
+# this test now uses `custom_image_equality`
+@test_reference "image.png" some_image
 ```
 """
 function default_equality_selector!(selector = default_equality)
