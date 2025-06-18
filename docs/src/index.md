@@ -27,4 +27,6 @@ Pages = ["index.md"]
 @io2str
 @test_reference
 psnr_equality
+default_equality_selector!
+with_default_equality_selector
 ```
