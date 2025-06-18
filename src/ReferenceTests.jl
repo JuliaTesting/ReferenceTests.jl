@@ -16,7 +16,9 @@ export
     @withcolor,
     @io2str,
     @test_reference,
-    psnr_equality
+    psnr_equality,
+    default_equality_selector!,
+    with_default_equality_selector
 
 include("utils.jl")
 include("test_reference.jl")
