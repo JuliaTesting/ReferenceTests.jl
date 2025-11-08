@@ -26,7 +26,7 @@ function render_item(::BeforeAfterLimited, item)
     read(io, String)
 end
 
-should_use_sixel() = Sixel.is_sixel_supported() || Base.get_bool_env("REFERENCETESTS_FORCE_SIXEL", false)
+should_use_sixel() = Sixel.is_sixel_supported() || parse(Bool, get(ENV, "REFERENCETESTS_FORCE_SIXEL", "false"))
 
 function render_item(::BeforeAfterImage, item)
     io = if should_use_sixel()
