@@ -45,7 +45,7 @@ jobs:
           julia --color=yes --check-bounds=yes --project -e "using Pkg; Pkg.test(coverage=true)"
           julia --color=yes --check-bounds=yes --project -e "using Pkg; Pkg.test(coverage=true)"
       - name: Upload Mismatched Files as a Build Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: "Mismatched Files"
           path: "~/mismatches/"
