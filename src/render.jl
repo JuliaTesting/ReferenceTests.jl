@@ -25,12 +25,19 @@ function render_item(::BeforeAfterLimited, item)
     show(io, "text/plain", item)
     read(io, String)
 end
+
+should_use_sixel() = Sixel.is_sixel_supported() || Base.get_bool_env("REFERENCETESTS_FORCE_SIXEL", false)
+
 function render_item(::BeforeAfterImage, item)
-    io = color_buffer()
+    io = if should_use_sixel()
+        PipeBuffer()
+    else
+        color_buffer()
+    end
     println(io, "eltype: ", eltype(item))
     println(io, "size: ", map(length, axes(item)))
     println(io, "thumbnail:")
-    if Base.get_bool_env("REFERENCETESTS_SIXEL", false)
+    if should_use_sixel()
         sixel_encode(io, item)
     else
         strs = @withcolor XTermColors.ascii_show(
