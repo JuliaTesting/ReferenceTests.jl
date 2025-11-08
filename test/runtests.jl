@@ -23,7 +23,7 @@ else
 end
 
 ambs = detect_ambiguities(ReferenceTests, Base, Core)
-@test isempty(ambs)
+@test isempty(ambs) broken=(VERSION>v"1.13.0-DEV.0")
 
 # to properly test world age issues, the full test dependencies must be loaded later
 include("test_no_world_age_issues.jl")
