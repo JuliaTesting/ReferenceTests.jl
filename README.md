@@ -75,7 +75,7 @@ using ReferenceTests, TestImages
 
 Proper image formats such as `.png` are also supported for full-res image testing. If your terminal 
 [supports Sixel](https://www.arewesixelyet.com/), then ReferenceTests will display the full image
-in your terminal using (Sixel.jl)[https://github.com/JuliaIO/Sixel.jl]:
+in your terminal using [Sixel.jl](https://github.com/JuliaIO/Sixel.jl):
 
 ![sixel_demo](.github/images/sixel_demo.png)
 
@@ -97,10 +97,14 @@ test suite. These tests are easy to run via `pkg> test` but
 the child process used within `pkg> test` is non-interactive, so the
 update prompt will not show if there are mismatches.
 
-To update references within a package test suite, there are three options:
+To update references within a package test suite, there are four options:
 
 - Set the environment variable `JULIA_REFERENCETESTS_UPDATE` to `"true"`
   and run `pkg> test`, which will force update any non-matches. You can then
+  check changes to any git-tracked reference images before commit.
+- Set the environment variable `JULIA_REFERENCETESTS_UPDATE_AND_ERROR` to 
+  `"true"` and run `pkg> test`, which will also force update any non-matches,
+  but each non-matching file will result in a test failure. You can then
   check changes to any git-tracked reference images before commit.
 - Delete any reference images you wish to update and run `pkg> test`, given
   that missing references are created automatically.

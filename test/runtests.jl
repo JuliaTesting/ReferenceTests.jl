@@ -205,4 +205,19 @@ end
     @test_reference file Dict(:ar=>arr_float) by=comp
 end
 
+@testset "force update and error" begin
+    withenv("JULIA_REFERENCETESTS_UPDATE" => "true") do
+        @test begin
+            @test_reference "references/random_string.txt" rand(10)
+            @test_reference "references/random_string.txt" rand(10)
+            true
+        end
+    end
+    withenv("JULIA_REFERENCETESTS_UPDATE_AND_ERROR" => "true") do
+        @test_throws Exception begin
+            @test_reference "references/random_string.txt" rand(10)
+        end
+    end
+end
+
 end  # top level testset

@@ -171,14 +171,26 @@ function test_reference(
 
         if force_update() || input_bool("Replace reference with actual result?")
             mv(actual_path, reference_path; force=true)  # overwrite old file it
-            @info "Please run the tests again for any changes to take effect"
+            if error_on_force_update()
+                error("""
+                The reference file has been updated, but an error was thrown because the environment variable
+                `JULIA_REFERENCETEST_UPDATE_AND_ERROR` was set to `true`.
+                """)
+            else
+                @info "Please run the tests again for any changes to take effect"
+            end
         else
             @test false
         end
     end
 end
 
-force_update() = tryparse(Bool, get(ENV, "JULIA_REFERENCETESTS_UPDATE", "false")) === true
+function force_update()
+    update = tryparse(Bool, get(ENV, "JULIA_REFERENCETESTS_UPDATE", "false")) === true
+    update_and_err = tryparse(Bool, get(ENV, "JULIA_REFERENCETESTS_UPDATE_AND_ERROR", "false")) === true
+    update || update_and_err
+end
+error_on_force_update() = tryparse(Bool, get(ENV, "JULIA_REFERENCETESTS_UPDATE_AND_ERROR", "false")) === true
 
 """
     mismatch_staging_dir()
