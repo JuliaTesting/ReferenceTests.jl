@@ -25,18 +25,25 @@ function render_item(::BeforeAfterLimited, item)
     show(io, "text/plain", item)
     read(io, String)
 end
+
+should_use_sixel() = Sixel.is_sixel_supported() || parse(Bool, get(ENV, "REFERENCETESTS_FORCE_SIXEL", "false"))
+
 function render_item(::BeforeAfterImage, item)
-    io = color_buffer()
+    io =  should_use_sixel() ? PipeBuffer() : color_buffer()
     println(io, "eltype: ", eltype(item))
     println(io, "size: ", map(length, axes(item)))
     println(io, "thumbnail:")
-    strs = @withcolor XTermColors.ascii_show(
-        item,
-        Base.invokelatest(XTermColors.TermColor8bit),
-        :small,
-        (20, 40)
-    )
-    print(io, join(strs, '\n'))
+    if should_use_sixel()
+        sixel_encode(io, item)
+    else
+        strs = @withcolor XTermColors.ascii_show(
+            item,
+            Base.invokelatest(XTermColors.TermColor8bit),
+            :small,
+            (20, 40)
+        )
+        print(io, join(strs, '\n'))
+    end
     read(io, String)
 end
 

@@ -23,8 +23,11 @@ else
 end
 
 ambs = detect_ambiguities(ReferenceTests, Base, Core)
-@test isempty(ambs)
-
+if VERSION>v"1.13.0-DEV.0"
+    @test_broken isempty(ambs) # Ref https://github.com/JuliaImages/ImageCore.jl/issues/210
+else
+    @test isempty(ambs)
+end
 # to properly test world age issues, the full test dependencies must be loaded later
 include("test_no_world_age_issues.jl")
 

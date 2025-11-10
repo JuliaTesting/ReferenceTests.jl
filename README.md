@@ -73,10 +73,16 @@ using ReferenceTests, TestImages
 ![readme3](https://user-images.githubusercontent.com/10854026/30002971-3ebdc350-90b7-11e7-8f40-2fc8b59ce9e8.png)
 ![readme4](https://user-images.githubusercontent.com/10854026/30002972-3edfff60-90b7-11e7-8bb5-8e647f9f4965.png)
 
-Note that while a text-based storage of reference images can be
-convenient, proper image formats (e.g. `png`) are also supported
-by the package. Those, however, will require the proper `FileIO`
-backends to be installed.
+Proper image formats such as `.png` are also supported for full-res image testing. If your terminal 
+[supports Sixel](https://www.arewesixelyet.com/), then ReferenceTests will display the full image
+in your terminal using (Sixel.jl)[https://github.com/JuliaIO/Sixel.jl]:
+
+![sixel_demo](.github/images/sixel_demo.png)
+
+Currently, Sixel is not able to automatically [detect if it is supported
+during package testing](https://github.com/JuliaLang/Pkg.jl/issues/3185),
+but it can be force-enable Sixel rendering of images by setting the
+environment variable `REFERENCETESTS_FORCE_SIXEL=true`.
 
 Another special file extension is `sha256` which will cause the
 hash of the result of the given expression to be stored and
