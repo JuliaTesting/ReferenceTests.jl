@@ -29,11 +29,7 @@ end
 should_use_sixel() = Sixel.is_sixel_supported() || parse(Bool, get(ENV, "REFERENCETESTS_FORCE_SIXEL", "false"))
 
 function render_item(::BeforeAfterImage, item)
-    io = if should_use_sixel()
-        PipeBuffer()
-    else
-        color_buffer()
-    end
+    io =  should_use_sixel() ? PipeBuffer() : color_buffer()
     println(io, "eltype: ", eltype(item))
     println(io, "size: ", map(length, axes(item)))
     println(io, "thumbnail:")
