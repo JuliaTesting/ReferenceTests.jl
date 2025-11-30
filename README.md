@@ -75,7 +75,7 @@ using ReferenceTests, TestImages
 
 Proper image formats such as `.png` are also supported for full-res image testing. If your terminal 
 [supports Sixel](https://www.arewesixelyet.com/), then ReferenceTests will display the full image
-in your terminal using (Sixel.jl)[https://github.com/JuliaIO/Sixel.jl]:
+in your terminal using [Sixel.jl](https://github.com/JuliaIO/Sixel.jl):
 
 ![sixel_demo](.github/images/sixel_demo.png)
 
