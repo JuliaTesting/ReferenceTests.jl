@@ -16,6 +16,8 @@ Arguments:
 * `filename::String`: _relative_ path to the file that contains the macro invocation.
 * `expr`: the actual content used to compare.
 * `by`: the equality test function. By default it is `isequal` if not explicitly stated.
+  A custom selector function that returns an equality function for a given `(reference, actual)` input
+  can be set permanently using `default_equality_selector!` or temporarily using `with_default_equality_selector`.
 * `format`: Force reading the file using a specific format
 
 # Types
@@ -102,6 +104,60 @@ macro test_reference(reference, actual, kws...)
     expr
 end
 
+function default_equality end
+
+const DEFAULT_EQUALITY_SELECTOR = Ref{Any}(default_equality)
+
+"""
+    default_equality_selector!()
+    default_equality_selector!(selector)
+
+Set `selector` as the global default function which is called in each reference test
+as `eq = selector(reference, actual)` where `eq` is the selected equality function for `actual` and `reference`
+which is then called as `eq(reference, actual)` to determine if the reference matches.
+If no input argument is given, the selector function is reset to the default.
+The equality function for a given `@test_reference` can be overridden using the `by` keyword.
+
+## Example
+
+```julia
+# we have some image comparison function we want to use by default
+custom_image_equality(reference, actual) = ...
+
+# our selector picks `custom_image_equality` for images and `isequal` for the rest
+custom_selector(actual, reference) = isequal
+custom_selector(reference::AbstractArray{<:Colorant}, actual::AbstractArray{<:Colorant}) =
+    custom_image_equality
+
+default_equality_selector!(custom_selector)
+
+# this test now uses `custom_image_equality`
+@test_reference "image.png" some_image
+```
+"""
+function default_equality_selector!(selector = default_equality)
+    DEFAULT_EQUALITY_SELECTOR[] = selector
+    return
+end
+
+"""
+    with_default_equality_selector(f, selector)
+
+Execute `f` while `selector` is set as the default global equality function selector using `default_equality_selector!`.
+The previous default selector is restored automatically after `f` succeeds or fails.
+"""
+function with_default_equality_selector(f, selector)
+    old = DEFAULT_EQUALITY_SELECTOR[]
+    try
+        default_equality_selector!(selector)
+        result = f()
+        default_equality_selector!()
+        result
+    finally
+        DEFAULT_EQUALITY_SELECTOR[] = old
+    end
+end
+
 function test_reference(
     filename::AbstractString, raw_actual;
     by = nothing, render = nothing, format = nothing, kw...)
@@ -145,7 +201,7 @@ function test_reference(
 
     if equiv === nothing
         # generally, `reference` and `actual` are of the same type after preprocessing
-        equiv = default_equality(reference, actual)
+        equiv = DEFAULT_EQUALITY_SELECTOR[](reference, actual)
     end
 
     if equiv(reference, actual)

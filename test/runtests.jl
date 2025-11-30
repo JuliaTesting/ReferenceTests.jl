@@ -36,6 +36,8 @@ using Plots
 
 strip_summary(content::String) = join(split(content, "\n")[2:end], "\n")
 
+struct CustomEqualityError <: Exception end
+
 @testset "ReferenceTests" begin
 
 # load/create some example images
@@ -203,6 +205,22 @@ end
         all([ isequal(v1,v2) for (v1,v2) in zip(values(d1), values(d2))])
     arr_float = [pi, pi/2, 1.0]
     @test_reference file Dict(:ar=>arr_float) by=comp
+end
+@testset "Default equality selector" begin
+    custom_equality(reference, actual) = (r, a) -> throw(CustomEqualityError())
+    
+    default_equality_selector!(custom_equality)
+    @test_throws CustomEqualityError @test_reference "references/camera.png" imresize(camera, (64,64))
+    @test_reference "references/camera.png" imresize(camera, (64,64)) by=psnr_equality()
+
+    default_equality_selector!()
+    @test_reference "references/camera.png" imresize(camera, (64,64))
+
+    with_default_equality_selector(custom_equality) do
+        @test_throws CustomEqualityError @test_reference "references/camera.png" imresize(camera, (64,64))
+        @test_reference "references/camera.png" imresize(camera, (64,64)) by=psnr_equality()
+    end
+    @test_reference "references/camera.png" imresize(camera, (64,64))
 end
 
 end  # top level testset
