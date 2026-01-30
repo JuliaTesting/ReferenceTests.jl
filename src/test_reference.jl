@@ -162,14 +162,13 @@ function test_reference(
         """ reference = reference_path actual = actual_path
         
         if !isinteractive() && !force_update()
-            error("""
+            @info """
             To update the reference images either run the tests interactively with 'include(\"test/runtests.jl\")',
             or to force-update all failing reference images set the environment variable `JULIA_REFERENCETESTS_UPDATE`
             to "true" and re-run the tests via Pkg.
-            """)
-        end
-
-        if force_update() || input_bool("Replace reference with actual result?")
+            """
+            @test false
+        elseif force_update() || input_bool("Replace reference with actual result?")
             mv(actual_path, reference_path; force=true)  # overwrite old file it
             @info "Please run the tests again for any changes to take effect"
         else
