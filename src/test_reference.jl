@@ -161,18 +161,19 @@ function test_reference(
         $(render(rendermode, reference, actual))
         """ reference = reference_path actual = actual_path
         
-        if !isinteractive() && !force_update()
-            error("""
-            To update the reference images either run the tests interactively with 'include(\"test/runtests.jl\")',
-            or to force-update all failing reference images set the environment variable `JULIA_REFERENCETESTS_UPDATE`
-            to "true" and re-run the tests via Pkg.
-            """)
-        end
-
-        if force_update() || input_bool("Replace reference with actual result?")
+        if force_update() || (isinteractive() && input_bool("Replace reference with actual result?"))
             mv(actual_path, reference_path; force=true)  # overwrite old file it
             @info "Please run the tests again for any changes to take effect"
         else
+            if !isinteractive()
+                @info """
+                To update the reference images either run the tests interactively with 'include(\"test/runtests.jl\")',
+                or to force-update all failing reference images set the environment variable `JULIA_REFERENCETESTS_UPDATE`
+                to "true" and re-run the tests via Pkg.
+                """
+            end
+            # Record a failure rather than throwing, so the enclosing testset keeps
+            # running unless the user asked for failfast.
             @test false
         end
     end

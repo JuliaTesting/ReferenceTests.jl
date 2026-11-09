@@ -36,6 +36,30 @@ using Plots
 
 strip_summary(content::String) = join(split(content, "\n")[2:end], "\n")
 
+# A testset that collects results without propagating them to its parent, so we
+# can check that `@test_reference` records a failure without failing our own suite.
+struct CaptureTestSet <: Test.AbstractTestSet
+    description::String
+    results::Vector{Any}
+end
+CaptureTestSet(desc; kw...) = CaptureTestSet(desc, Any[])
+Test.record(ts::CaptureTestSet, t) = (push!(ts.results, t); t)
+Test.finish(ts::CaptureTestSet) = ts
+
+"""
+    @test_fails expr
+
+Run `expr` in an isolated testset and test that it recorded exactly one `Test.Fail`.
+"""
+macro test_fails(expr)
+    quote
+        ts = @testset CaptureTestSet "expected failure" begin
+            $(esc(expr))
+        end
+        @test length(ts.results) == 1 && only(ts.results) isa Test.Fail
+    end
+end
+
 @testset "ReferenceTests" begin
 
 # load/create some example images
@@ -88,8 +112,8 @@ end
     """
 
     with_logger(test_logger) do
-        @test_throws ErrorException @test_reference "references/string1.txt" "intentionally wrong to check that this message prints"
-        @test_throws ErrorException @test_reference "references/string5.txt" """
+        @test_fails @test_reference "references/string1.txt" "intentionally wrong to check that this message prints"
+        @test_fails @test_reference "references/string5.txt" """
             This is an incorrect
             multiline string that does not end with a new line."""
     end
@@ -112,7 +136,7 @@ end
         render = ReferenceTests.BeforeAfterFull()
     )
     with_logger(test_logger) do
-        @test_throws ErrorException @test_reference(
+        @test_fails @test_reference(
             "references/ansii.txt",
             @io2str(printstyled(IOContext(::IO, :color=>true), "this should be red", color=:red)),
             render = ReferenceTests.BeforeAfterFull()
@@ -138,8 +162,8 @@ end
     @test_reference "references/camera.png" imresize(camera, (64,64))
     @test_reference "references/camera.png" imresize(camera, (64,64)) by=psnr_equality(25)
     with_logger(test_logger) do
-        @test_throws ErrorException @test_reference "references/camera.png" imresize(monarch, (64,64))
-        @test_throws Exception @test_reference "references/camera.png" camera # unequal size
+        @test_fails @test_reference "references/camera.png" imresize(monarch, (64,64))
+        @test_fails @test_reference "references/camera.png" camera # unequal size
     end
 end
 
@@ -153,7 +177,7 @@ using DataFrames, CSVFiles
 @testset "DataFrame as CSV" begin
     @test_reference "references/dataframe.csv" DataFrame(v1=[1,2,3], v2=["a","b","c"])
     with_logger(test_logger) do
-        @test_throws ErrorException @test_reference "references/dataframe.csv" DataFrame(v1=[1,2,3], v2=["c","b","c"])
+        @test_fails @test_reference "references/dataframe.csv" DataFrame(v1=[1,2,3], v2=["c","b","c"])
     end
 end
 
